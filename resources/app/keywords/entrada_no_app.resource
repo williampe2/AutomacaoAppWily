@@ -21,3 +21,5 @@ Clicar em Entrar
     wait until Element Is Visible    ${LOGIN_BTN_ENTRAR}    10s
     Click Element                    ${LOGIN_BTN_ENTRAR}
 
+
+
