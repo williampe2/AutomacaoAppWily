@@ -1,32 +1,10 @@
 usuarios:
-  wily_ativo:
-    nome: "Wily"
+  wily_DA:
+    nome: "João Carlo Te"
     tipo: "ativo"
-    perfil: "automacao"
-    usuario_app: "wily@empresa.com"
-    senha_app: "senha123"
-    usuario_web: "wily_qa"
-    senha_web: "senha_web_123"
+    perfil: "DA"
+    usuario_app: "sasa3650@uorak.com"
+    senha_app: "Lupa@132"
 
-  joao_sem_carteira:
-    nome: "Joao"
-    tipo: "sem_carteira"
-    perfil: "cliente"
-    usuario_app: "joao@empresa.com"
-    senha_app: "senha456"
-    usuario_web: "joao_qa"
-    senha_web: "senha_web_456"
-
-  consultor_operador:
-    nome: "Operador"
-    tipo: "operador"
-    perfil: "suporte"
-    usuario_web: "operador_qa"
-    senha_web: "senha_operador_qa"
-
-  perfil_jornada_ciclo:
-    nome: "QA Wily Teste"
-    telefone: "11999999999"
-    email: "qa.wily@teste.com"
 
 

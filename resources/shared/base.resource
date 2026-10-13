@@ -2,8 +2,12 @@
 Documentation    Arquivo responsável por iniciar e encerrar as sessões do Appium (Mobile) e do Browser (Web).
 Library          AppiumLibrary
 Library          DatabaseLibrary
+Library          SeleniumLibrary    
 Variables        ../../config/env_qa.yaml
-variable         ../../config/secrets.yaml
+variables        ../../config/secrets.yaml
+Resource         ../app/screens/cadastro_tela.resource
+Resource         ../app/keywords/entrada_no_app.resource
+
 
 *** Keywords ***
 
@@ -18,9 +22,10 @@ Abrir Aplicativo Wily no Emulador
     ...                 udid=${app}[udid]
     ...                 noReset=${app}[no_reset]
     ...                 autoGrantPermissions=${app}[auto_grant_permissions]
-    
-    # Aplica o timeout que você definiu no YAML para os comandos do Appium
-    Set Appium Timeout    ${timeouts}[explicit_wait]
+    ${botao_visivel}    Run Keyword And Return Status    Wait Until Element Is Visible    ${CADASTRO_BTN_CRIAR_CONTA}    3s
+    IF    not ${botao_visivel}
+            Clicar em Acessar Conta
+    END
 
 Connect To Database    
     psycopg2    ${db_name}    ${db_user}    ${db_pass}    ${db_host}    ${db_port}
@@ -30,9 +35,9 @@ Fechar Aplicativo Wily
     [Documentation]    Encerra a sessão do Appium
     Close Application
 
-# Abrir navegador operador
-#     Open Browser    ${WEB_BASE_URL}    ${BROWSER}
-#     Maximize Browser Window
+Abrir navegador operador
+    Open Browser    ${WEB_BASE_URL}    ${BROWSER}
+    Maximize Browser Window
 
 Fechar sessao do app
     Close Application
@@ -40,5 +45,5 @@ Fechar sessao do app
 Desconectar do Banco de Dados
     Disconnect From Database
 
-# Fechar sessao web
-#     Close Browser
+Fechar sessao web
+    Close Browser
