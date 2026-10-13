@@ -1,0 +1,25 @@
+app:
+  platform_name: "Android"
+  automation_name: "UiAutomator2"
+  app_package: "xxxxxxxxxxxxxx"
+  app_activity: "cxxxxxxxxxxxxx"
+  device_name: "xxxxxxxxxxxxx" # aqui voce pode colocar o nome do seu dispositivo ou o udid do mesmo.
+  udid: "xxxxxxxxxxxxx"   # Caso queria rodar no dispositivo real, coloque no cmd adb devices e copie o udid do dispositivo.
+  no_reset: false
+  auto_grant_permissions: true
+  
+web:
+  base_url_legado: "https://dashboard-staging.wily.com.br/"
+  base_url_nova: "https://staging.wil.live/"
+  browser: "xxxxxxxxxxxxx"
+  username: "xxxxxxxxxxxxx"
+  password: "xxxxxxxxxxxxx"
+
+db: 
+  host: "xxxxxxxxxxxxxxxxr"
+  port: 0000
+  name: "xxxxxb"
+
+
+
+
