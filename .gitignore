@@ -20,3 +20,8 @@ __pycache__/
 # Sistema
 .DS_Store
 Thumbs.db
+
+#resultados
+log.html
+output.html
+report.html 

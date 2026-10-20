@@ -4,6 +4,7 @@ Resource        ../screens/login_tela.resource
 Resource        ../screens/home_tela.resource
 Library         OperatingSystem 
 Library         String  # Necessária para manipular o texto da senha 
+Library         AppiumLibrary
 
 *** Keywords ***
 Clicar em Acessar Conta
@@ -16,8 +17,8 @@ Preencher campos de Email
     [Arguments]                      ${EMAIL_WILY} 
     Wait Until Element Is Visible    ${LOGIN_INPUT_USERNAME}    10s
     Input Text                       ${LOGIN_INPUT_USERNAME}    ${EMAIL_WILY}
+    Hide Keyboard 
     Click Element                    ${LOGIN_BTN_AVANCAR}
-
 preencher campos de senha
     [Documentation]    Preenche o campo de senha
     [Arguments]                      ${SENHA_WILY}
@@ -47,6 +48,3 @@ Fluxo login completo
     preencher campos de senha     ${SENHA_WILY}
     Clicar em Entrar
     Verificar se o login foi realizado com sucesso
-
-
-

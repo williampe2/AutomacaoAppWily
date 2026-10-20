@@ -27,11 +27,24 @@ Cenario: Aceitar vistoria no App e validar recebimento de fotos no sistema WEB
     Maximize Browser Window
 
     Acessar sistema WEB e verificar login          ${email_web_yaml}    ${senha_web_yaml}
-    
     Acessar a tela do Mapa de Wilys
-    
     Localizar o Wily e abrir o modal de fotos      ${name_wily_yaml}
-    
     Preencher o formulário de diagnóstico e enviar
     
     [Teardown]    Close Browser
+cenário: criação de vistoria para wily de DM
+    [Documentation]    Fluxo ponta a ponta (End-to-End) envolvendo Appium e Selenium.
+    
+    # Busca as credenciais no arquivo YAML
+    ${name_wily_yaml}        Set Variable    ${usuarios}[wily_DM][nome]
+    ${email_web_yaml}        Set Variable    ${web}[username]
+    ${senha_web_yaml}        Set Variable    ${web}[password]
+
+    
+    Open Browser    about:blank    chrome
+    Maximize Browser Window
+
+    Acessar sistema WEB e verificar login          ${email_web_yaml}    ${senha_web_yaml}
+    Acessar a tela do Mapa de Wilys
+
+

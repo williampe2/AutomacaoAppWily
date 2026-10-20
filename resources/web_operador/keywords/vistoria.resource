@@ -30,79 +30,81 @@ ${WEB_BTN_SCROOL}                   id=modal-analyze-images
 Acessar sistema WEB e verificar login
     [Documentation]    Acessa a URL legado, tenta fechar o LGPD e faz login.
     [Arguments]    ${EMAIL_WEB}    ${SENHA_WEB}
+    
+    Set Library Search Order     SeleniumLibrary 
 
-    SeleniumLibrary.Go To    ${web}[base_url_legado]
+    Go To    ${web}[base_url_legado]
 
     Sleep    1s
 
     # TENTA CLICAR NO BANNER LGPD (SHADOW DOM)
     ${js_comando}=    Set Variable    document.querySelector("#dpoeasy-banner").shadowRoot.querySelector("button[data-action='accept']").click()
-    Run Keyword And Ignore Error    SeleniumLibrary.Execute Javascript    ${js_comando}
+    Run Keyword And Ignore Error    Execute Javascript    ${js_comando}
     
     Sleep    1s
 
     # Verifica se já está logado procurando o menu do mapa
-    ${esta_logado}=    Run Keyword And Return Status    SeleniumLibrary.Wait Until Element Is Visible    ${WEB_MENU_MAPA}    1s
+    ${esta_logado}=    Run Keyword And Return Status    Wait Until Element Is Visible    ${WEB_MENU_MAPA}    1s
     
     IF    not ${esta_logado}
-        SeleniumLibrary.Wait Until Element Is Visible    ${WEB_INPUT_EMAIL}    5s
-        SeleniumLibrary.Input Text                       ${WEB_INPUT_EMAIL}    ${EMAIL_WEB}
-        SeleniumLibrary.Input Password                   ${WEB_INPUT_SENHA}    ${SENHA_WEB}
-        SeleniumLibrary.Click Element                    ${WEB_BTN_LOGIN}
+        Wait Until Element Is Visible    ${WEB_INPUT_EMAIL}    5s
+        Input Text                       ${WEB_INPUT_EMAIL}    ${EMAIL_WEB}
+        Input Password                   ${WEB_INPUT_SENHA}    ${SENHA_WEB}
+        Click Element                    ${WEB_BTN_LOGIN}
         
-        SeleniumLibrary.Wait Until Element Is Visible    ${WEB_MENU_MAPA}    5s
+        Wait Until Element Is Visible    ${WEB_MENU_MAPA}    5s
     ELSE
         Log    Usuário já está autenticado no sistema WEB.
     END
 Acessar a tela do Mapa de Wilys
     [Documentation]    Clica no menu Mapa e valida o carregamento completo da página.
     
-    SeleniumLibrary.Wait Until Element Is Visible    ${WEB_MENU_MAPA}    10s
-    SeleniumLibrary.Click Element                    ${WEB_MENU_MAPA}
-    SeleniumLibrary.Wait Until Element Is Visible    ${WEB_INDICADOR_LOGADO}    15s
+    Wait Until Element Is Visible    ${WEB_MENU_MAPA}    10s
+    Click Element                    ${WEB_MENU_MAPA}
+    Wait Until Element Is Visible    ${WEB_INDICADOR_LOGADO}    15s
 
 Localizar o Wily e abrir o modal de fotos
     [Documentation]    Busca um Wily específico na tela usando um XPath dinâmico e clica nele.
     [Arguments]    ${NOME_WILY}
     
-    SeleniumLibrary.Wait Until Element Is Visible    ${WEB_BTN_ACESSA_FOTOS}    15s
-    SeleniumLibrary.Click Element                    ${WEB_BTN_ACESSA_FOTOS}
+    Wait Until Element Is Visible    ${WEB_BTN_ACESSA_FOTOS}    15s
+    Click Element                    ${WEB_BTN_ACESSA_FOTOS}
 
-    SeleniumLibrary.Wait Until Element Is Visible     ${WEB_SELECT_WILY_FILTRO}     10s 
-    SeleniumLibrary.Select From List By Label     ${WEB_SELECT_WILY_FILTRO}     Todos 
+    Wait Until Element Is Visible     ${WEB_SELECT_WILY_FILTRO}     10s 
+    Select From List By Label     ${WEB_SELECT_WILY_FILTRO}     Todos 
 
     # Cria um localizador dinâmico com o nome do Wily (Ex: Procura o nome dentro de uma tabela/lista)
     ${elemento_wily}=    Set Variable    xpath=//*[contains(text(), '${usuarios}[wily_DA][nome]')]
     
-    SeleniumLibrary.Wait Until Element Is Visible    ${elemento_wily}    15s
-    SeleniumLibrary.Click Element                    ${elemento_wily}
+    Wait Until Element Is Visible    ${elemento_wily}    15s
+    Click Element                    ${elemento_wily}
     
-    SeleniumLibrary.Wait Until Element Is Visible    ${WEB_BTN_DESBLOQUEAR}   10s
+    Wait Until Element Is Visible    ${WEB_BTN_DESBLOQUEAR}   10s
 
 Preencher o formulário de diagnóstico e enviar
     [Documentation]    Rola a tela até o formulário, preenche os campos e atualiza a OS.
 
-    SeleniumLibrary.Wait Until Element Is Visible    ${WEB_BTN_SCROOL}    10s
-    SeleniumLibrary.Scroll Element Into View         ${WEB_BTN_SCROOL}
+    Wait Until Element Is Visible    ${WEB_BTN_SCROOL}    10s
+    Scroll Element Into View         ${WEB_BTN_SCROOL}
 
-    SeleniumLibrary.Wait Until Element Is Visible    ${WEB_SELECT_DIAGNOSTICO}    10s
-    SeleniumLibrary.Select From List By Value        ${WEB_SELECT_DIAGNOSTICO}    5
+    Wait Until Element Is Visible    ${WEB_SELECT_DIAGNOSTICO}    10s
+    Select From List By Value        ${WEB_SELECT_DIAGNOSTICO}    5
 
     Sleep    1s
     
-    SeleniumLibrary.Wait Until Element Is Visible    ${WEB_BTN_ANALISE}    5s
-    SeleniumLibrary.Click Element                    ${WEB_BTN_ANALISE}
+    Wait Until Element Is Visible    ${WEB_BTN_ANALISE}    5s
+    Click Element                    ${WEB_BTN_ANALISE}
     
-    SeleniumLibrary.Wait Until Element Is Visible    ${WEB_OPCAO_ANALISE_TEXTO}    5s
-    SeleniumLibrary.Click Element                    ${WEB_OPCAO_ANALISE_TEXTO}
+    Wait Until Element Is Visible    ${WEB_OPCAO_ANALISE_TEXTO}    5s
+    Click Element                    ${WEB_OPCAO_ANALISE_TEXTO}
     
-    SeleniumLibrary.Wait Until Element Is Visible    ${WEB_RADIO_AVALIACAO_5}    5s
-    SeleniumLibrary.Click Element                    ${WEB_RADIO_AVALIACAO_5}
+    Wait Until Element Is Visible    ${WEB_RADIO_AVALIACAO_5}    5s
+    Click Element                    ${WEB_RADIO_AVALIACAO_5}
     
     Sleep    1s
 
-    SeleniumLibrary.Wait Until Element Is Visible    ${WEB_BTN_DIAGNOSTICO_ENVIAR}    5s
-    SeleniumLibrary.Click Element                    ${WEB_BTN_DIAGNOSTICO_ENVIAR}
+    Wait Until Element Is Visible    ${WEB_BTN_DIAGNOSTICO_ENVIAR}    5s
+    Click Element                    ${WEB_BTN_DIAGNOSTICO_ENVIAR}
 
     sleep   1s
 

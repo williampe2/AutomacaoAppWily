@@ -2,7 +2,6 @@
 Documentation    Arquivo responsável por iniciar e encerrar as sessões do Appium (Mobile) e do Browser (Web).
 Library          AppiumLibrary
 Library          DatabaseLibrary
-Library          SeleniumLibrary    
 Variables        ../../config/env_qa.yaml
 variables        ../../config/secrets.yaml
 Resource         ../app/screens/cadastro_tela.resource
