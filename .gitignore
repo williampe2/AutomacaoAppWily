@@ -2,6 +2,8 @@
 config/*
 !config/secrets.example.yaml
 
+*.apk
+
 # Ambientes virtuais
 venv/
 .venv/
