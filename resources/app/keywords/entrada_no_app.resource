@@ -2,6 +2,7 @@
 Documentation     Keywords de autenticação no app.
 Resource        ../screens/login_tela.resource
 Resource        ../screens/home_tela.resource
+Resource    ../../../resources/shared/variables/common_variables.resource
 Library         OperatingSystem 
 Library         String  # Necessária para manipular o texto da senha 
 Library         AppiumLibrary

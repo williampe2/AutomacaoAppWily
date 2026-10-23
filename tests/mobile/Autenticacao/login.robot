@@ -22,6 +22,3 @@ Cenario: Login com sucesso
     END
     Verificar se o login foi realizado com sucesso
     Sleep  5s
-Entra no app sem o login
-    Verificar se o login foi realizado com sucesso
-

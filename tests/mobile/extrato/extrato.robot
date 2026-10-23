@@ -4,6 +4,7 @@ Resource         ../../../resources/app/keywords/extrato.resource
 Resource         ../../../resources/app/keywords/entrada_no_app.resource
 Variables        ../../../config/secrets.yaml
 Variables        ../../../resources/data/perfis_usuarios.yaml
+Resource    ../../../resources/shared/variables/common_variables.resource
 
 Suite Setup      Preparar extrato
 
