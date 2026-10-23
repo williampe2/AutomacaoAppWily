@@ -27,3 +27,6 @@ log.html
 output.html
 report.html 
 *.xml
+
+#allure report
+*.sh
