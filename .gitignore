@@ -1,5 +1,7 @@
 # Arquivos locais/privados
-config/secrets.yaml
+config/*
+!config/secrets.example.yaml
+resources/data/perfis_usuarios.yaml
 
 # Ambientes virtuais
 venv/

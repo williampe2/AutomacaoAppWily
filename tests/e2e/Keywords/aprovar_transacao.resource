@@ -4,6 +4,7 @@ Documentation     Keywords do fluxo de aprovação de transação no sistema WEB
 Library           SeleniumLibrary
 Resource          ../../../resources/web_operador/keywords/vistoria.resource
 Variables         ../../../config/env_qa.yaml
+Variables         ../../../config/secrets.yaml
 Variables         ../../../resources/data/perfis_usuarios.yaml
 
 *** Keywords ***
@@ -12,11 +13,11 @@ Aprovar transação no WEB
     ...                preenche o formulário de diagnóstico e envia a aprovação.
     ...                Deve ser chamada DEPOIS de o app concluir a vistoria, para que
     ...                as fotos e o vídeo já estejam disponíveis no sistema WEB.
-    ${email_web}=    Set Variable    ${web}[username]
-    ${senha_web}=    Set Variable    ${web}[password]
+    ${email_web}=    Set Variable    ${web_login}[username]
+    ${senha_web}=    Set Variable    ${web_login}[password]
     ${nome_wily}=    Set Variable    ${usuarios}[wily_DA][nome]
 
-    SeleniumLibrary.Open Browser    about:blank    chrome
+    SeleniumLibrary.Open Browser    about:blank    ${web}[browser]
     SeleniumLibrary.Maximize Browser Window
 
     Acessar sistema WEB e verificar login    ${email_web}    ${senha_web}
