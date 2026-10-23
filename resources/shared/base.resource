@@ -1,6 +1,6 @@
 *** Settings ***
 Documentation    Arquivo responsável por iniciar e encerrar as sessões do Appium (Mobile) e do Browser (Web).
-Library          AppiumLibrary    run_on_failure=Nothing
+Library          AppiumLibrary      run_on_failure=AppiumLibrary.Capture Page Screenshot
 Library          DatabaseLibrary
 Variables        ../../config/env_qa.yaml
 Variables        ../data/perfis_usuarios.yaml

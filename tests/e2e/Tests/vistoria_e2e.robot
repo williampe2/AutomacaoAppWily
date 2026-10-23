@@ -1,6 +1,5 @@
 *** Settings ***
-Documentation     Fluxo End-to-End: conclui a vistoria no app (Appium) e aprova
-...               a transação no sistema WEB (Selenium), no mesmo cenário.
+Documentation     Fluxo End-to-End: conclui a vistoria no app (Appium) e aprova a transação no sistema WEB (Selenium).
 Library           AppiumLibrary
 Library           SeleniumLibrary
 Resource          ../../../resources/shared/base.resource
@@ -15,10 +14,10 @@ Variables         ../../../resources/data/perfis_usuarios.yaml
 Vistoria Deve Ser Concluída E Aprovada No WEB
     [Documentation]    Conclui a vistoria no app e valida/aprova no sistema WEB.
     [Tags]    mobile    web    e2e    vistoria
-    [Setup]       Preparar sessão de vistoria
+    [Setup]    Preparar sessão de vistoria
     [Teardown]    Encerrar sessões E2E
 
-    # ===== Etapas do App (Appium) =====
+    # Etapas do aplicativo (Appium)
     Iniciar
     Aceitar oferta
     Rolar até Iniciar vistoria
@@ -26,7 +25,7 @@ Vistoria Deve Ser Concluída E Aprovada No WEB
     Enviar fotos
     Completar mídias e concluir
 
-    # ===== Etapas da Web (Selenium) =====
-    # Roda o mesmo fluxo do aprovar_transacao.robot, depois de o app concluir.
+    # Etapas do sistema WEB (Selenium)
     Aprovar transação no WEB
     Ficar offline
+    

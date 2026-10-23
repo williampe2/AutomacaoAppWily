@@ -79,30 +79,36 @@ Localizar o Wily e abrir o modal de fotos
     Wait Until Element Is Visible    ${WEB_BTN_DESBLOQUEAR}   10s
 
 Preencher o formulário de diagnóstico e enviar
-    [Documentation]    Rola a tela até o formulário, preenche os campos e atualiza a OS.
+    [Documentation]    Rola até o formulário, preenche os campos e atualiza a OS.
 
     Wait Until Element Is Visible    ${WEB_BTN_SCROOL}    10s
-    Scroll Element Into View         ${WEB_BTN_SCROOL}
+    SeleniumLibrary.Scroll Element Into View    ${WEB_BTN_SCROOL}
 
     Wait Until Element Is Visible    ${WEB_SELECT_DIAGNOSTICO}    10s
-    Select From List By Value        ${WEB_SELECT_DIAGNOSTICO}    5
+
+    # Espera as opções carregarem antes de selecionar
+    Wait Until Page Contains Element
+    ...    xpath=//*[@id="analize-image-performed"]/option[@value='5']    10s
+
+    # Seleciona "Executado" (value 5)
+    SeleniumLibrary.Select From List By Label
+    ...    ${WEB_SELECT_DIAGNOSTICO}
+    ...    Executado
 
     Sleep    1s
-    
+
     Wait Until Element Is Visible    ${WEB_BTN_ANALISE}    5s
-    Click Element                    ${WEB_BTN_ANALISE}
-    
+    SeleniumLibrary.Click Element    ${WEB_BTN_ANALISE}
+
     Wait Until Element Is Visible    ${WEB_OPCAO_ANALISE_TEXTO}    5s
-    Click Element                    ${WEB_OPCAO_ANALISE_TEXTO}
-    
+    SeleniumLibrary.Click Element    ${WEB_OPCAO_ANALISE_TEXTO}
+
     Wait Until Element Is Visible    ${WEB_RADIO_AVALIACAO_5}    5s
-    Click Element                    ${WEB_RADIO_AVALIACAO_5}
-    
+    SeleniumLibrary.Click Element    ${WEB_RADIO_AVALIACAO_5}
+
     Sleep    1s
 
     Wait Until Element Is Visible    ${WEB_BTN_DIAGNOSTICO_ENVIAR}    5s
-    Click Element                    ${WEB_BTN_DIAGNOSTICO_ENVIAR}
+    SeleniumLibrary.Click Element    ${WEB_BTN_DIAGNOSTICO_ENVIAR}
 
-    sleep   1s
-
-    
+    Sleep    1s
