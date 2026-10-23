@@ -1,7 +1,6 @@
 *** Settings ***
 Documentation    Validar o fluxo de login no app 
-Variables        ../../../config/secrets.yaml
-Variables        ../../../resources/data/perfis_usuarios.yaml 
+Variables        ../../../resources/data/perfis_usuarios.yaml
 Resource         ../../../resources/shared/base.resource
 Resource         ../../../resources/app/keywords/entrada_no_app.resource
 Resource         ../../../resources/app/keywords/quiz.resource

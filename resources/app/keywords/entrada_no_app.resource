@@ -37,14 +37,13 @@ Clicar em Entrar
     
 Verificar se o login foi realizado com sucesso
     [Documentation]    Verifica se o login foi realizado com sucesso
-    ${elemento_visivel}=    Run Keyword And Return Status    Wait Until Element Is Visible    ${HOME_BTN_MENU}   10s
-    Run Keyword If    not ${elemento_visivel}    Fail    Login falhou: Elemento da tela inicial não encontrado.
+    wait until Element Is Visible     ${HOME_MAPA}    ${DEFAULT_TIMEOUT}s
 
-Fluxo login completo
+Realizar login
     [Documentation]    Realiza o fluxo completo de login no aplicativo.
-    [Arguments]         ${EMAIL_WILY}    ${SENHA_WILY}
+    [Arguments]    ${EMAIL_WILY}    ${SENHA_WILY}
     Clicar em Acessar Conta
     Preencher campos de Email    ${EMAIL_WILY}
-    preencher campos de senha     ${SENHA_WILY}
+    preencher campos de senha    ${SENHA_WILY}
     Clicar em Entrar
     Verificar se o login foi realizado com sucesso

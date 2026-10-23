@@ -70,9 +70,6 @@ Localizar o Wily e abrir o modal de fotos
     Wait Until Element Is Visible    ${WEB_BTN_ACESSA_FOTOS}    15s
     Click Element                    ${WEB_BTN_ACESSA_FOTOS}
 
-    Wait Until Element Is Visible     ${WEB_SELECT_WILY_FILTRO}     10s 
-    Select From List By Label     ${WEB_SELECT_WILY_FILTRO}     Todos 
-
     # Cria um localizador dinâmico com o nome do Wily (Ex: Procura o nome dentro de uma tabela/lista)
     ${elemento_wily}=    Set Variable    xpath=//*[contains(text(), '${usuarios}[wily_DA][nome]')]
     

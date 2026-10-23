@@ -4,6 +4,7 @@ config/secrets.yaml
 # Ambientes virtuais
 venv/
 .venv/
+.venv-1/
 
 # Logs e relatórios
 results/
