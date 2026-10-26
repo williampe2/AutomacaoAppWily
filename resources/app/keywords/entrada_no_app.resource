@@ -14,7 +14,7 @@ Clicar em Acessar Conta
     Click Element                    ${LOGIN_BTN_ACESSAR_CONTA}
 
 Preencher campos de Email
-    [Documentation]    Preenche o usuário email
+    [Documentation]    Preenche o usuário email.
     [Arguments]                      ${EMAIL_WILY}
     Wait Until Element Is Visible    ${LOGIN_INPUT_USERNAME}    10s
     Input Text                       ${LOGIN_INPUT_USERNAME}    ${EMAIL_WILY}
@@ -22,14 +22,19 @@ Preencher campos de Email
     Click Element                    ${LOGIN_BTN_AVANCAR}
 
 Preencher campos de senha
-    [Documentation]    Preenche o campo de senha
+    [Documentation]    Preenche a senha; usa Appium em nuvem e mantém o método adb local existente.
     [Arguments]                      ${SENHA_WILY}
     Wait Until Element Is Visible    ${LOGIN_INPUT_PASSWORD}    10s
     Click Element                    ${LOGIN_INPUT_PASSWORD}
-    @{caracteres}=                   Split String To Characters    ${SENHA_WILY}
-    FOR    ${letra}    IN    @{caracteres}
-        Run                          adb shell input text "${letra}"
-        Sleep                        0.05s
+    ${bs_username}=    Get Environment Variable    BROWSERSTACK_USERNAME    ${EMPTY}
+    IF    $bs_username != ''
+        AppiumLibrary.Input Text    ${LOGIN_INPUT_PASSWORD}    ${SENHA_WILY}
+    ELSE
+        @{{}caracteres}=    Split String To Characters    ${SENHA_WILY}
+        FOR    ${letra}    IN    @{{}caracteres}
+            Run    adb shell input text "${letra}"
+            Sleep    0.05s
+        END
     END
 
 Clicar em Entrar
@@ -38,7 +43,7 @@ Clicar em Entrar
     Click Element                    ${LOGIN_BTN_ENTRAR}
 
 Verificar se o login foi realizado com sucesso
-    [Documentation]    Verifica se o login foi realizado com sucesso
+    [Documentation]    Verifica se o login foi realizado com sucesso.
     Wait Until Element Is Visible    ${HOME_MAPA}    ${DEFAULT_TIMEOUT}s
 
 Realizar login
