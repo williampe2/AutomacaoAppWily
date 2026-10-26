@@ -33,7 +33,7 @@ Abrir sessão Appium
         ${bs_app_id}=    Get Environment Variable    BROWSERSTACK_APP_ID    ${EMPTY}
         Should Not Be Empty    ${bs_access_key}    A variável BROWSERSTACK_ACCESS_KEY não foi configurada.
         Should Not Be Empty    ${bs_app_id}    A variável BROWSERSTACK_APP_ID não foi configurada.
-        Open Application    https://hub.browserstack.com/wd/hub
+        Open Application    https://hub-cloud.browserstack.com/wd/hub
         ...    platformName=Android
         ...    automationName=UiAutomator2
         ...    app=${bs_app_id}
