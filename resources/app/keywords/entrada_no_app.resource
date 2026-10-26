@@ -30,8 +30,8 @@ Preencher campos de senha
     IF    $bs_username != ''
         AppiumLibrary.Input Text    ${LOGIN_INPUT_PASSWORD}    ${SENHA_WILY}
     ELSE
-        @{{}caracteres}=    Split String To Characters    ${SENHA_WILY}
-        FOR    ${letra}    IN    @{{}caracteres}
+        @{caracteres}=    Split String To Characters    ${SENHA_WILY}
+        FOR    ${letra}    IN    @{caracteres}
             Run    adb shell input text "${letra}"
             Sleep    0.05s
         END
