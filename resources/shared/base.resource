@@ -34,7 +34,6 @@ Abrir aplicativo
     END
     Log To Console    \n>>> Destino: ${url}
     Open Application    ${url}    &{caps}
-    Open Application    ${url}    &{caps}
 
 Montar capabilities local
     [Documentation]    Capabilities do dispositivo físico, via Appium local.
@@ -53,7 +52,8 @@ Montar capabilities local
 Montar capabilities BrowserStack
     [Documentation]    Capabilities da nuvem. Variáveis de ambiente usadas:
     ...    BROWSERSTACK_USERNAME, BROWSERSTACK_ACCESS_KEY, BS_APP_URL (obrigatórias);
-    ...    BS_DEVICE, BS_OS_VERSION, BS_BUILD_NAME, BS_LOCAL (opcionais).
+    ...    BS_DEVICE, BS_OS_VERSION, BS_BUILD_NAME, BS_LOCAL, BS_GPS_LOCATION (opcionais).
+    ...    BS_GPS_LOCATION no formato "latitude,longitude" (padrão: Rua Getúlio Vargas, Picos-PI).
     [Arguments]    ${no_reset}
     ${local}=    Evaluate    '%{BS_LOCAL=true}'.lower() == 'true'
     &{opts}=    Create Dictionary
@@ -62,6 +62,7 @@ Montar capabilities BrowserStack
     ...    projectName=Automacao Wily
     ...    buildName=%{BS_BUILD_NAME=local}
     ...    local=${local}
+    ...    gpsLocation=%{BS_GPS_LOCATION=-7.0769,-41.4672}
     &{caps}=    Create Dictionary
     ...    platformName=Android
     ...    automationName=UiAutomator2
