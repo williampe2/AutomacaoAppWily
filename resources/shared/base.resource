@@ -54,10 +54,10 @@ Montar capabilities BrowserStack
     [Documentation]    Capabilities da nuvem. Variáveis de ambiente usadas:
     ...    BROWSERSTACK_USERNAME, BROWSERSTACK_ACCESS_KEY, BS_APP_URL (obrigatórias);
     ...    BS_DEVICE, BS_OS_VERSION, BS_BUILD_NAME, BS_LOCAL, BS_GPS_LOCATION,
-    ...    BROWSERSTACK_LOCAL_IDENTIFIER (opcionais).
+    ...    BS_GEO_LOCATION, BROWSERSTACK_LOCAL_IDENTIFIER (opcionais).
     ...    BS_GPS_LOCATION no formato "latitude,longitude" (padrão: Rua Getúlio Vargas, Picos-PI).
-    ...    BROWSERSTACK_LOCAL_IDENTIFIER é o nome do túnel (exportado pela action no CI;
-    ...    vazio na máquina local, onde o túnel manual não tem identificador).
+    ...    BS_GEO_LOCATION é o código do país do IP de saída (padrão: BR).
+    ...    BROWSERSTACK_LOCAL_IDENTIFIER é o nome do túnel (vazio = túnel sem nome).
     [Arguments]    ${no_reset}
     ${local}=    Evaluate    '%{BS_LOCAL=true}'.lower() == 'true'
     &{opts}=    Create Dictionary
@@ -67,6 +67,7 @@ Montar capabilities BrowserStack
     ...    buildName=%{BS_BUILD_NAME=local}
     ...    local=${local}
     ...    gpsLocation=%{BS_GPS_LOCATION=-7.0769,-41.4672}
+    ...    networkLogs=${True}
     ${local_id}=    Get Environment Variable    BROWSERSTACK_LOCAL_IDENTIFIER    default=${EMPTY}
     IF    '${local_id}' != ''
         Set To Dictionary    ${opts}    localIdentifier=${local_id}
