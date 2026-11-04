@@ -52,6 +52,7 @@ jobs:
           local-args: --force-local
         env:
           BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+          
 
       - name: Executar login no BrowserStack
         run: |
