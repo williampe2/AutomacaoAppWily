@@ -55,10 +55,11 @@ jobs:
           BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
           
 
-      - name: Testar acesso ao backend a partir do runner
+      - name: Subir backend local
         run: |
-          echo "IP do runner:"; curl -s https://ifconfig.me; echo
-          curl -sS -o /dev/null -m 15 -w "HTTP %{http_code} em %{time_total}s\n" "${{ secrets.BACKEND_URL }}" || echo "SEM RESPOSTA"
+          docker compose up -d   # ou o comando que você usa localmente
+          # aguardar ficar saudável
+          for i in $(seq 1 30); do curl -sf http://localhost:PORTA/health && break || sleep 2; done
 
       - name: Parar túnel BrowserStack Local
         if: always()
