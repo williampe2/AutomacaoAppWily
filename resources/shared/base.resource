@@ -67,7 +67,7 @@ Montar capabilities BrowserStack
     ...    buildName=%{BS_BUILD_NAME=local}
     ...    local=${local}
     ...    gpsLocation=%{BS_GPS_LOCATION=-7.0769,-41.4672}
-    ${local_id}=    Get Environment Variable    BROWSERSTACK_LOCAL_IDENTIFIER    default=${EMPTY}
+    ${local_id}=    Get Environment Variable    BROWSERSTACK_LOCAL_IDENTIFIER: gh-${{ github.run_id }}-${{ github.run_attempt }}
     IF    '${local_id}' != ''
         Set To Dictionary    ${opts}    localIdentifier=${local_id}
     END
