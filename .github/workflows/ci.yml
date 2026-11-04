@@ -18,7 +18,6 @@ jobs:
       BS_APP_URL: ${{ secrets.BS_APP_URL }}
       BS_BUILD_NAME: ${{ github.workflow }}-${{ github.run_number }}
       BS_LOCAL: "true"
-      BROWSERSTACK_LOCAL_IDENTIFIER: gh-${{ github.run_id }}-${{ github.run_attempt }}
 
     steps:
       - name: Checkout do código
@@ -49,17 +48,14 @@ jobs:
         uses: browserstack/github-actions/setup-local@master
         with:
           local-testing: start
-          local-identifier: ${{ env.BROWSERSTACK_LOCAL_IDENTIFIER }}
           local-args: --force-local
         env:
           BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
           
 
-      - name: Subir backend local
+      - name: Executar login no BrowserStack
         run: |
-          docker compose up -d   # ou o comando que você usa localmente
-          # aguardar ficar saudável
-          for i in $(seq 1 30); do curl -sf http://localhost:PORTA/health && break || sleep 2; done
+          python -m robot -d results tests/mobile/Autenticacao/login.robot
 
       - name: Parar túnel BrowserStack Local
         if: always()
