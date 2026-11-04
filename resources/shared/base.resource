@@ -5,6 +5,7 @@ Documentation    Arquivo responsável por iniciar e encerrar as sessões do Appi
 Library          AppiumLibrary      run_on_failure=AppiumLibrary.Capture Page Screenshot
 Library          DatabaseLibrary
 Library          OperatingSystem
+Library          Collections
 Variables        ../../config/env_qa.yaml
 Variables        ../data/perfis_usuarios.yaml
 Resource         ../app/screens/cadastro_tela.resource
