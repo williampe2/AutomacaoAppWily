@@ -33,3 +33,6 @@ report.html
 
 #allure report
 *.sh
+
+#arquivos de midia para rodar no browserstack
+media/
