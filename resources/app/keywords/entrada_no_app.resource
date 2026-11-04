@@ -20,24 +20,20 @@ Executando no BrowserStack
 
 Esconder teclado
     [Documentation]    Local: Hide Keyboard como sempre. BrowserStack: o driver da nuvem não
-    ...    aceita mobile: hideKeyboard nem mobile: pressKey. Tenta a ação "done" do
-    ...    teclado e, se ele continuar aberto, usa o keycode Voltar direto pelo driver.
+    ...    aceita mobile: hideKeyboard nem mobile: pressKey. Fecha o teclado com o keycode
+    ...    Voltar direto pelo driver (sem performEditorAction, que digitava "/done/" no campo).
     ${bs}=    Executando no BrowserStack
     IF    ${bs}
         ${lib}=       Get Library Instance    AppiumLibrary
         ${driver}=    Call Method             ${lib}    _current_application
         ${aberto}=    Evaluate                $driver.is_keyboard_shown()
         IF    ${aberto}
-            &{args}=    Create Dictionary    action=done
-            Run Keyword And Ignore Error    Execute Script    mobile: performEditorAction    &{args}
-            ${ainda}=    Evaluate    $driver.is_keyboard_shown()
-            IF    ${ainda}
-                Evaluate    $driver.press_keycode(4)
-            END
+            Evaluate    $driver.press_keycode(4)
         END
     ELSE
         Hide Keyboard
     END
+    
 
 # ---------- Login ----------
 Clicar em Acessar Conta
