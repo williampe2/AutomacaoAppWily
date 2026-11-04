@@ -18,6 +18,7 @@ jobs:
       BS_APP_URL: ${{ secrets.BS_APP_URL }}
       BS_BUILD_NAME: ${{ github.workflow }}-${{ github.run_number }}
       BS_LOCAL: "true"
+      BROWSERSTACK_LOCAL_IDENTIFIER: gh-${{ github.run_id }}-${{ github.run_attempt }}
 
     steps:
       - name: Checkout do código
@@ -48,7 +49,7 @@ jobs:
         uses: browserstack/github-actions/setup-local@master
         with:
           local-testing: start
-          local-identifier: gh-${{ github.run_id }}-${{ github.run_attempt }}
+          local-identifier: ${{ env.BROWSERSTACK_LOCAL_IDENTIFIER }}
           local-args: --force-local
         env:
           BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
