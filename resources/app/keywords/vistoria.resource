@@ -280,9 +280,9 @@ Ficar offline
 
 # ---------- Sessão ----------
 Preparar sessão de vistoria
-    [Documentation]    Abre o app preservando a sessão. Se a tela de boas-vindas
-    ...                ("Acessar conta") aparecer, entra na Home. Também aceita o caso
-    ...                de já haver um atendimento em andamento ("Caminhe até o local").
+    [Documentation]    Abre o app preservando a sessão, em modo paisagem. Se a tela de
+    ...                boas-vindas ("Acessar conta") aparecer, entra na Home. Também aceita
+    ...                o caso de já haver um atendimento em andamento ("Caminhe até o local").
     Abrir aplicativo    no_reset=${True}
     ${welcome}=    Aparece na tela    ${LOGIN_BTN_ACESSAR_CONTA}    15s
     IF    ${welcome}
@@ -298,7 +298,8 @@ Estar na Home ou em atendimento
     Should Be True    ${home} or ${atend}
 
 Encerrar sessões E2E
-    [Documentation]    Encerra a sessão do browser (Web) e do app (Appium). Cada uma é
-    ...    tentada separadamente: se uma falhar (ou não existir), a outra ainda é encerrada.
+    [Documentation]    Devolve o celular ao retrato, e encerra a sessão do browser (Web)
+    ...    e do app (Appium). Cada passo é tentado separadamente: se um falhar
+    ...    (ou não existir), os outros ainda são executados.
     Run Keyword And Ignore Error    SeleniumLibrary.Close All Browsers
     Run Keyword And Ignore Error    AppiumLibrary.Close Application
