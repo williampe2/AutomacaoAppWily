@@ -1,6 +1,7 @@
 # Arquivos locais/privados
 config/*
 !config/secrets.example.yaml
+!config/env_qa.yaml
 
 *.apk
 
