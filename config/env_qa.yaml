@@ -17,4 +17,5 @@ db:
   host: "qa-database.empresa.com.br"
   port: 5432
   name: "qa_automacao_db"
+
   
