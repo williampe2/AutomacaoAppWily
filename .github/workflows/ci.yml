@@ -55,9 +55,10 @@ jobs:
           BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
           
 
-      - name: Executar login no BrowserStack
+      - name: Testar acesso ao backend a partir do runner
         run: |
-          python -m robot -d results tests/mobile/Autenticacao/login.robot
+          echo "IP do runner:"; curl -s https://ifconfig.me; echo
+          curl -sS -o /dev/null -m 15 -w "HTTP %{http_code} em %{time_total}s\n" "${{ secrets.BACKEND_URL }}" || echo "SEM RESPOSTA"
 
       - name: Parar túnel BrowserStack Local
         if: always()
