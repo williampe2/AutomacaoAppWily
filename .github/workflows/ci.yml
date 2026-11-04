@@ -48,7 +48,7 @@ jobs:
         uses: browserstack/github-actions/setup-local@master
         with:
           local-testing: start
-          local-identifier: random
+          local-identifier: gh-${{ github.run_id }}-${{ github.run_attempt }}
           local-args: --force-local
         env:
           BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
