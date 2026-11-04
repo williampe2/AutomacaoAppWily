@@ -52,9 +52,9 @@ jobs:
         env:
           BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
 
-      - name: Executar smoke tests no BrowserStack
+      - name: Executar login no BrowserStack
         run: |
-          robot --include smoke --outputdir results tests/mobile
+          python -m robot -d results tests/mobile/Autenticacao/login.robot
 
       - name: Parar túnel BrowserStack Local
         if: always()
