@@ -2,13 +2,22 @@ name: CI Automacao
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main, master, integration ]
   pull_request:
-    branches: [ main, master ]
+    branches: [ main, master, integration ]
 
 jobs:
   robot-tests:
     runs-on: ubuntu-latest
+    if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
+
+    env:
+      EXECUCAO: browserstack
+      BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
+      BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+      BS_APP_URL: ${{ secrets.BS_APP_URL }}
+      BS_BUILD_NAME: ${{ github.workflow }}-${{ github.run_number }}
+      BS_LOCAL: "true"
 
     steps:
       - name: Checkout do código
@@ -28,18 +37,34 @@ jobs:
         run: |
           python - <<'PY'
           import os
-          required = [
-              'config',
-              'resources',
-              'tests'
-          ]
+          required = ['config', 'resources', 'tests']
           missing = [p for p in required if not os.path.exists(p)]
           if missing:
               raise SystemExit(f'Pastas ausentes: {missing}')
           print('Estrutura base OK')
           PY
 
-      - name: Executar smoke tests
+      - name: Iniciar túnel BrowserStack Local
+        uses: browserstack/github-actions/setup-local@master
+        with:
+          local-testing: start
+          local-identifier: random
+        env:
+          BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+
+      - name: Executar smoke tests no BrowserStack
         run: |
-          robot --outputdir results tests
-        continue-on-error: true
+          robot --include smoke --outputdir results tests/mobile
+
+      - name: Parar túnel BrowserStack Local
+        if: always()
+        uses: browserstack/github-actions/setup-local@master
+        with:
+          local-testing: stop
+
+      - name: Publicar resultados
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: robot-results
+          path: results/
