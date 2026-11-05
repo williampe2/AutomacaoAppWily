@@ -19,6 +19,8 @@ jobs:
       BS_LOCAL_IDENTIFIER: ci-${{ github.run_id }}-${{ github.run_attempt }}
       BS_BUILD_NAME: ${{ github.workflow }}-${{ github.run_id }}-${{ github.run_attempt }}
       BS_SESSION_NAME: login-${{ github.run_id }}-${{ github.run_attempt }}
+      # Pasta/arquivo de testes passado ao Robot (ajuste se quiser rodar só uma suíte)
+      ROBOT_SUITE: tests
 
     steps:
       - name: Checkout do código
@@ -44,6 +46,29 @@ jobs:
           if missing:
               raise SystemExit(f'Pastas ausentes: {missing}')
           print('Estrutura base OK')
+          PY
+
+      # config/secrets.yaml está fora do git; aqui ele é gerado a partir dos secrets.
+      # AJUSTE os nomes das chaves para os que o seu aprovar_transacao.resource espera.
+      - name: Gerar config/secrets.yaml
+        env:
+          WEB_USER: ${{ secrets.WEB_USER }}
+          WEB_PASS: ${{ secrets.WEB_PASS }}
+        run: |
+          set -euo pipefail
+          : "${WEB_USER:?Configure o secret WEB_USER}"
+          : "${WEB_PASS:?Configure o secret WEB_PASS}"
+          mkdir -p config
+          python - <<'PY'
+          import json, os
+          dados = {
+              "WEB_USER": os.environ["WEB_USER"],
+              "WEB_PASS": os.environ["WEB_PASS"],
+          }
+          # JSON é YAML válido e escapa aspas/caracteres especiais com segurança
+          with open("config/secrets.yaml", "w", encoding="utf-8") as f:
+              json.dump(dados, f, ensure_ascii=False, indent=2)
+          print("config/secrets.yaml gerado.")
           PY
 
       - name: Diagnóstico de rede do runner
@@ -173,14 +198,16 @@ jobs:
           BS_APP_URL: ${{ secrets.BS_APP_URL }}
           BS_GPS_LOCATION: "-7.0769,-41.4672"
         run: |
+          set -euo pipefail
           : "${BROWSERSTACK_USERNAME:?Configure o secret BROWSERSTACK_USERNAME}"
           : "${BROWSERSTACK_ACCESS_KEY:?Configure o secret BROWSERSTACK_ACCESS_KEY}"
           : "${BS_APP_URL:?Configure o secret BS_APP_URL}"
+          : "${ROBOT_SUITE:?Caminho dos testes vazio}"
           export BROWSERSTACK_USERNAME BROWSERSTACK_ACCESS_KEY BS_APP_URL
           export EXECUCAO=browserstack
           export BS_LOCAL=true
           export BROWSERSTACK_LOCAL_IDENTIFIER="$BS_LOCAL_IDENTIFIER"
-          python -m robot -d results tests/e2e/Tests/vistoria_e2e.robot
+          python -m robot -d results "$ROBOT_SUITE"
 
       - name: Parar túnel BrowserStack Local
         if: always()
@@ -237,6 +264,10 @@ jobs:
             .[].automation_session
             | "Sessão: \(.hashed_id)\nStatus: \(.status)\nDispositivo: \(.device) / Android \(.os_version)\nApp: \(.app_details.app_name) \(.app_details.app_version)\nDashboard: \(.browser_url)\n"
           ' <<< "$sessions"
+
+      - name: Remover config/secrets.yaml
+        if: always()
+        run: rm -f config/secrets.yaml
 
       - name: Publicar resultados
         if: always()

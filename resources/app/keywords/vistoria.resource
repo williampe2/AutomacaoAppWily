@@ -310,14 +310,18 @@ Preparar sessão de vistoria
     Wait Until Keyword Succeeds    ${DEFAULT_TIMEOUT}s    2s    Estar na Home ou em atendimento
 
 Forçar paisagem
-    [Documentation]    Garante que o app esteja em paisagem, usando o driver do
-    ...    Appium-Python-Client. Só troca se a orientação atual for diferente.
+    [Documentation]    Garante paisagem, tentando de novo se o device demorar a girar.
+    Wait Until Keyword Succeeds    30s    2s    Tentar forçar paisagem
+
+Tentar forçar paisagem
     ${biblioteca}=    BuiltIn.Get Library Instance    AppiumLibrary
     ${driver}=        Evaluate    $biblioteca._current_application()
     ${atual}=         Evaluate    $driver.orientation
     IF    '${atual}' != 'LANDSCAPE'
         Evaluate    setattr($driver, 'orientation', 'LANDSCAPE')
     END
+    ${depois}=        Evaluate    $driver.orientation
+    Should Be Equal    ${depois}    LANDSCAPE
 
 Estar na Home ou em atendimento
     [Documentation]    Considera pronto quando a Home (botão Iniciar) ou um atendimento
