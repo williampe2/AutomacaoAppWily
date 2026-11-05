@@ -41,6 +41,12 @@ Clicar em Acessar Conta
     Wait Until Element Is Visible    ${LOGIN_BTN_ACESSAR_CONTA}    10s
     Click Element                    ${LOGIN_BTN_ACESSAR_CONTA}
 
+Registrar rótulos de autenticação na tela atual
+    [Documentation]    Registra apenas rótulos relacionados à autenticação antes de inserir credenciais.
+    ${fonte}=    Get Source
+    ${rotulos}=    Evaluate    re.findall(r'(?:content-desc|text)="([^"]*(?:conta|login|entrar|criar)[^"]*)"', $fonte, re.I)    modules=re
+    Log To Console    \nRótulos da tela de autenticação: ${rotulos}
+
 Preencher campos de Email
     [Documentation]    Preenche o usuário email
     [Arguments]                      ${EMAIL_WILY}
