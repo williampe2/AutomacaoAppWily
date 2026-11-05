@@ -23,6 +23,7 @@ jobs:
         with:
           python-version: '3.11'
         env:
+          AGENT_TOOLSDIRECTORY: ${{ runner.temp }}/toolcache
           RUNNER_TOOL_CACHE: ${{ runner.temp }}/toolcache
 
       - name: Instalar dependências
