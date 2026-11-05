@@ -298,30 +298,32 @@ Ficar offline
 
 # ---------- Sessão ----------
 Preparar sessão de vistoria
-    [Documentation]    Abre o app preservando a sessão, em modo paisagem. Se a tela de
-    ...                boas-vindas ("Acessar conta") aparecer, entra na Home. Também aceita
-    ...                o caso de já haver um atendimento em andamento ("Caminhe até o local").
     Abrir aplicativo    no_reset=${True}    orientacao=PORTRAIT
-    Forçar paisagem
     ${welcome}=    Aparece na tela    ${LOGIN_BTN_ACESSAR_CONTA}    15s
     IF    ${welcome}
         Clicar quando visível    ${LOGIN_BTN_ACESSAR_CONTA}
     END
+    Forçar paisagem
     Wait Until Keyword Succeeds    ${DEFAULT_TIMEOUT}s    2s    Estar na Home ou em atendimento
-
-Forçar paisagem
-    [Documentation]    Garante paisagem, tentando de novo se o device demorar a girar.
-    Wait Until Keyword Succeeds    30s    2s    Tentar forçar paisagem
 
 Tentar forçar paisagem
     ${biblioteca}=    BuiltIn.Get Library Instance    AppiumLibrary
     ${driver}=        Evaluate    $biblioteca._current_application()
-    ${atual}=         Evaluate    $driver.orientation
-    IF    '${atual}' != 'LANDSCAPE'
+    ${largura}=       AppiumLibrary.Get Window Width
+    ${altura}=        AppiumLibrary.Get Window Height
+    Log To Console    Antes: orientation=${driver.orientation} tela=${largura}x${altura}
+    IF    int($largura) < int($altura)
         Evaluate    setattr($driver, 'orientation', 'LANDSCAPE')
+        Sleep    1s
     END
-    ${depois}=        Evaluate    $driver.orientation
-    Should Be Equal    ${depois}    LANDSCAPE
+    ${largura}=       AppiumLibrary.Get Window Width
+    ${altura}=        AppiumLibrary.Get Window Height
+    Log To Console    Depois: tela=${largura}x${altura}
+    Should Be True    int($largura) > int($altura)
+
+Forçar paisagem
+    [Documentation]    Garante paisagem, tentando de novo se o device demorar a girar.
+    Wait Until Keyword Succeeds    30s    2s    Tentar forçar paisagem
 
 Estar na Home ou em atendimento
     [Documentation]    Considera pronto quando a Home (botão Iniciar) ou um atendimento
