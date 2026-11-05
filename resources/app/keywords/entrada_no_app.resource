@@ -70,6 +70,7 @@ Preencher campos de senha
             Sleep    0.05s
         END
     END
+    Esconder teclado
 
 Clicar em Entrar
     [Documentation]    Clica no botão "Entrar" na tela de login.
