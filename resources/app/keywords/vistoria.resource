@@ -301,7 +301,7 @@ Preparar sessão de vistoria
     [Documentation]    Abre o app preservando a sessão, em modo paisagem. Se a tela de
     ...                boas-vindas ("Acessar conta") aparecer, entra na Home. Também aceita
     ...                o caso de já haver um atendimento em andamento ("Caminhe até o local").
-    Abrir aplicativo    no_reset=${True}    orientacao=LANDSCAPE
+    Abrir aplicativo    no_reset=${True}    orientacao=PORTRAIT
     Forçar paisagem
     ${welcome}=    Aparece na tela    ${LOGIN_BTN_ACESSAR_CONTA}    15s
     IF    ${welcome}
