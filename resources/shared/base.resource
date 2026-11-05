@@ -26,19 +26,18 @@ Abrir Aplicativo Wily no Emulador
 
 Abrir aplicativo
     [Documentation]    Abre o app no destino definido por EXECUCAO (local | browserstack).
-    ...    Por padrão usa o no_reset do YAML; com no_reset=${True} preserva a sessão.
-    [Arguments]    ${no_reset}=${app}[no_reset]
+    ...    Por padrão usa o no_reset do YAML e orientação retrato.
+    [Arguments]    ${no_reset}=${app}[no_reset]    ${orientacao}=PORTRAIT
     IF    '%{EXECUCAO=local}' == 'browserstack'
-        ${url}    ${caps}=    Montar capabilities BrowserStack    ${no_reset}
+        ${url}    ${caps}=    Montar capabilities BrowserStack    ${no_reset}    ${orientacao}
     ELSE
-        ${url}    ${caps}=    Montar capabilities local    ${no_reset}
+        ${url}    ${caps}=    Montar capabilities local    ${no_reset}    ${orientacao}
     END
     Log To Console    \n>>> Destino: ${url}
     Open Application    ${url}    &{caps}
 
 Montar capabilities local
-    [Documentation]    Capabilities do dispositivo físico, via Appium local.
-    [Arguments]    ${no_reset}
+    [Arguments]    ${no_reset}    ${orientacao}=PORTRAIT
     &{caps}=    Create Dictionary
     ...    platformName=${app}[platform_name]
     ...    automationName=${app}[automation_name]
@@ -48,18 +47,11 @@ Montar capabilities local
     ...    udid=${app}[udid]
     ...    noReset=${no_reset}
     ...    autoGrantPermissions=${app}[auto_grant_permissions]
+    ...    orientation=${orientacao}
     RETURN    http://127.0.0.1:4723    ${caps}
 
 Montar capabilities BrowserStack
-    [Documentation]    Capabilities da nuvem. Variáveis de ambiente usadas:
-    ...    BROWSERSTACK_USERNAME, BROWSERSTACK_ACCESS_KEY, BS_APP_URL (obrigatórias);
-    ...    BS_DEVICE, BS_OS_VERSION, BS_BUILD_NAME, BS_SESSION_NAME, BS_LOCAL, BS_GPS_LOCATION,
-    ...    BS_GEO_LOCATION, BROWSERSTACK_LOCAL_IDENTIFIER (opcionais).
-    ...    BS_GPS_LOCATION no formato "latitude,longitude" (padrão: Rua Getúlio Vargas, Picos-PI).
-    ...    BS_GEO_LOCATION é o código do país do IP de saída (padrão: BR).
-    ...    BROWSERSTACK_LOCAL_IDENTIFIER é o nome do túnel (vazio = túnel sem nome).
-    ...    networkLogs permanece desativado para evitar interceptação TLS em APIs com certificate pinning.
-    [Arguments]    ${no_reset}
+    [Arguments]    ${no_reset}    ${orientacao}=PORTRAIT
     ${local}=    Evaluate    '%{BS_LOCAL=true}'.lower() == 'true'
     &{opts}=    Create Dictionary
     ...    userName=%{BROWSERSTACK_USERNAME}
@@ -70,6 +62,7 @@ Montar capabilities BrowserStack
     ...    local=${local}
     ...    gpsLocation=%{BS_GPS_LOCATION=-7.0769,-41.4672}
     ...    networkLogs=${False}
+    ...    deviceOrientation=${orientacao}
     ${local_id}=    Get Environment Variable    BROWSERSTACK_LOCAL_IDENTIFIER    default=${EMPTY}
     IF    '${local_id}' != ''
         Set To Dictionary    ${opts}    localIdentifier=${local_id}
@@ -82,6 +75,7 @@ Montar capabilities BrowserStack
     ...    app=%{BS_APP_URL}
     ...    noReset=${no_reset}
     ...    autoGrantPermissions=${True}
+    ...    orientation=${orientacao}
     ...    bstack:options=${opts}
     RETURN    https://hub.browserstack.com/wd/hub    ${caps}
 

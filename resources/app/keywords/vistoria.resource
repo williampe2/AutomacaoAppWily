@@ -201,11 +201,13 @@ Rolar tela de mídias
     Deslizar para cima    0.75    0.35    ${600}
 
 Confirmar foto
-    [Documentation]    Dispara a câmera (botão central) e confirma a foto capturada.
+    [Documentation]    Dispara a câmera (botão central), confirma a foto capturada e
+    ...    garante que o app voltou para paisagem (a câmera pode devolvê-lo em retrato).
     [Arguments]    ${foto}
     Aguardar elemento visível    ${VISTORIA_TEXTO_ZOOM_CAMERA}
     Disparar câmera
     Clicar quando visível        ${VISTORIA_BTN_CONFIRMAR_FOTO}
+    Forçar paisagem
     Aguardar elemento visível    ${foto}
 
 Disparar câmera
@@ -229,10 +231,26 @@ Abrir câmera pelo modal
     Clicar quando visível        ${VISTORIA_BTN_CAMERA}
     Aguardar elemento visível    ${VISTORIA_TEXTO_ZOOM_CAMERA}
 
+Injetar vídeo na câmera
+    [Documentation]    Injeta o vídeo enviado pelo CI (BS_VIDEO_URL) como feed da câmera.
+    ...    Só atua no BrowserStack (EXECUCAO=browserstack); no local, não faz nada.
+    ...    Precisa rodar ANTES de acionar a câmera, que captura o último vídeo injetado.
+    IF    '%{EXECUCAO=local}' != 'browserstack'
+        RETURN
+    END
+    ${url}=    Get Environment Variable    BS_VIDEO_URL    default=${EMPTY}
+    Should Not Be Empty    ${url}
+    ...    msg=BS_VIDEO_URL não definida: o upload do vídeo não rodou.
+    ${script}=    Set Variable
+    ...    browserstack_executor: {"action": "cameraVideoInjection", "arguments": {"videoUrl": "${url}"}}
+    AppiumLibrary.Execute Script    ${script}
+
 Adicionar vídeo
-    [Documentation]    Abre o modal "Adicionar mídia" da seção Vídeos, escolhe a Câmera,
-    ...    grava ao menos 16s (o app exige no mínimo 15s) e confirma o vídeo.
+    [Documentation]    Abre o modal "Adicionar mídia" da seção Vídeos, injeta o vídeo no
+    ...    feed da câmera (BrowserStack), escolhe a Câmera, grava ao menos 16s
+    ...    (o app exige no mínimo 15s) e confirma o vídeo.
     Clicar quando visível    ${VISTORIA_ADD_VIDEO}
+    Injetar vídeo na câmera
     Abrir câmera pelo modal
     Disparar câmera
     BuiltIn.Sleep    ${VISTORIA_VIDEO_MINIMO_SEGUNDOS}s
@@ -283,12 +301,23 @@ Preparar sessão de vistoria
     [Documentation]    Abre o app preservando a sessão, em modo paisagem. Se a tela de
     ...                boas-vindas ("Acessar conta") aparecer, entra na Home. Também aceita
     ...                o caso de já haver um atendimento em andamento ("Caminhe até o local").
-    Abrir aplicativo    no_reset=${True}
+    Abrir aplicativo    no_reset=${True}    orientacao=LANDSCAPE
+    Forçar paisagem
     ${welcome}=    Aparece na tela    ${LOGIN_BTN_ACESSAR_CONTA}    15s
     IF    ${welcome}
         Clicar quando visível    ${LOGIN_BTN_ACESSAR_CONTA}
     END
     Wait Until Keyword Succeeds    ${DEFAULT_TIMEOUT}s    2s    Estar na Home ou em atendimento
+
+Forçar paisagem
+    [Documentation]    Garante que o app esteja em paisagem, usando o driver do
+    ...    Appium-Python-Client. Só troca se a orientação atual for diferente.
+    ${biblioteca}=    BuiltIn.Get Library Instance    AppiumLibrary
+    ${driver}=        Evaluate    $biblioteca._current_application()
+    ${atual}=         Evaluate    $driver.orientation
+    IF    '${atual}' != 'LANDSCAPE'
+        Evaluate    setattr($driver, 'orientation', 'LANDSCAPE')
+    END
 
 Estar na Home ou em atendimento
     [Documentation]    Considera pronto quando a Home (botão Iniciar) ou um atendimento
@@ -298,8 +327,8 @@ Estar na Home ou em atendimento
     Should Be True    ${home} or ${atend}
 
 Encerrar sessões E2E
-    [Documentation]    Devolve o celular ao retrato, e encerra a sessão do browser (Web)
-    ...    e do app (Appium). Cada passo é tentado separadamente: se um falhar
-    ...    (ou não existir), os outros ainda são executados.
+    [Documentation]    Encerra a sessão do browser (Web) e do app (Appium). Cada passo é
+    ...    tentado separadamente: se um falhar (ou não existir), os outros ainda
+    ...    são executados.
     Run Keyword And Ignore Error    SeleniumLibrary.Close All Browsers
     Run Keyword And Ignore Error    AppiumLibrary.Close Application
