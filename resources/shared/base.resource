@@ -53,7 +53,7 @@ Montar capabilities local
 Montar capabilities BrowserStack
     [Documentation]    Capabilities da nuvem. Variáveis de ambiente usadas:
     ...    BROWSERSTACK_USERNAME, BROWSERSTACK_ACCESS_KEY, BS_APP_URL (obrigatórias);
-    ...    BS_DEVICE, BS_OS_VERSION, BS_BUILD_NAME, BS_LOCAL, BS_GPS_LOCATION,
+    ...    BS_DEVICE, BS_OS_VERSION, BS_BUILD_NAME, BS_SESSION_NAME, BS_LOCAL, BS_GPS_LOCATION,
     ...    BS_GEO_LOCATION, BROWSERSTACK_LOCAL_IDENTIFIER (opcionais).
     ...    BS_GPS_LOCATION no formato "latitude,longitude" (padrão: Rua Getúlio Vargas, Picos-PI).
     ...    BS_GEO_LOCATION é o código do país do IP de saída (padrão: BR).
@@ -65,6 +65,7 @@ Montar capabilities BrowserStack
     ...    accessKey=%{BROWSERSTACK_ACCESS_KEY}
     ...    projectName=Automacao Wily
     ...    buildName=%{BS_BUILD_NAME=local}
+    ...    sessionName=%{BS_SESSION_NAME=login}
     ...    local=${local}
     ...    gpsLocation=%{BS_GPS_LOCATION=-7.0769,-41.4672}
     ...    networkLogs=${True}

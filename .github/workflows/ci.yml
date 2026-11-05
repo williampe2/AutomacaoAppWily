@@ -12,6 +12,8 @@ jobs:
     if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
     env:
       BS_LOCAL_IDENTIFIER: ci-${{ github.run_id }}-${{ github.run_attempt }}
+      BS_BUILD_NAME: ${{ github.workflow }}-${{ github.run_id }}-${{ github.run_attempt }}
+      BS_SESSION_NAME: login-${{ github.run_id }}-${{ github.run_attempt }}
 
     steps:
       - name: Checkout do código
@@ -95,7 +97,6 @@ jobs:
           BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
           BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
           BS_APP_URL: ${{ secrets.BS_APP_URL }}
-          BS_BUILD_NAME: ${{ github.workflow }}-${{ github.run_number }}
           BS_GPS_LOCATION: "-7.0769,-41.4672"
         run: |
           : "${BROWSERSTACK_USERNAME:?Configure o secret BROWSERSTACK_USERNAME}"
@@ -124,6 +125,44 @@ jobs:
             echo "Últimas linhas do log BrowserStack Local:"
             tail -n 80 "$log_file"
           fi
+
+      - name: Exibir detalhes da sessão BrowserStack
+        if: always()
+        continue-on-error: true
+        env:
+          BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
+          BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+        run: |
+          set -euo pipefail
+          builds_url="https://api-cloud.browserstack.com/app-automate/builds.json?limit=100"
+          build_id=""
+
+          for attempt in {1..6}; do
+            if builds=$(curl --fail --silent --show-error \
+              --user "$BROWSERSTACK_USERNAME:$BROWSERSTACK_ACCESS_KEY" \
+              "$builds_url"); then
+              build_id=$(jq -r --arg name "$BS_BUILD_NAME" \
+                '[.[] | .automation_build | select(.name == $name)][0].hashed_id // empty' \
+                <<< "$builds")
+              if [[ -n "$build_id" ]]; then
+                break
+              fi
+            fi
+            sleep 5
+          done
+
+          if [[ -z "$build_id" ]]; then
+            echo "::error::Não foi possível localizar o build BrowserStack '$BS_BUILD_NAME'."
+            exit 1
+          fi
+
+          sessions=$(curl --fail --silent --show-error \
+            --user "$BROWSERSTACK_USERNAME:$BROWSERSTACK_ACCESS_KEY" \
+            "https://api-cloud.browserstack.com/app-automate/builds/$build_id/sessions.json")
+          jq -r '
+            .[].automation_session
+            | "Sessão: \(.hashed_id)\nStatus: \(.status)\nDispositivo: \(.device) / Android \(.os_version)\nApp: \(.app_details.app_name) \(.app_details.app_version)\nDashboard: \(.browser_url)\n"
+          ' <<< "$sessions"
 
       - name: Publicar resultados
         if: always()
