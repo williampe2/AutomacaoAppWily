@@ -10,7 +10,7 @@ ${LOGIN_INPUT_PASSWORD}                          xpath=//android.widget.EditText
 ${LOGIN_BTN_ENTRAR}                              accessibility_id=Entrar
 ${LOGIN_TXT_USUARIO_INVALIDO}                    xpath=//android.widget.TextView[@text="Usuário inválida"] 
 ${LOGIN_TXT_USUARIO_NAO_AUTORIZADO}              xpath=//android.widget.TextView[@text="Não autorizado"]
-
+${LOGIN_TXT_CARREGANDO}                          xpath=//*[contains(@text, "Carregando suas informações")]
 
 
 

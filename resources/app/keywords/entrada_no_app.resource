@@ -77,8 +77,38 @@ Clicar em Entrar
     Click Element                    ${LOGIN_BTN_ENTRAR}
 
 Verificar se o login foi realizado com sucesso
-    [Documentation]    Verifica se o login foi realizado com sucesso
-    Wait Until Element Is Visible    ${HOME_MAPA}    ${DEFAULT_TIMEOUT}s
+    [Documentation]    Confirma a Home por um identificador estável e classifica falhas visíveis.
+    ${home_visivel}=    Run Keyword And Return Status
+    ...    Wait Until Element Is Visible    ${HOME_BTN_MENU}    ${DEFAULT_TIMEOUT}s
+    IF    ${home_visivel}
+        RETURN
+    END
+
+    ${carregando}=    Run Keyword And Return Status
+    ...    Wait Until Element Is Visible    ${LOGIN_TXT_CARREGANDO}    1s
+    IF    ${carregando}
+        Fail    Login enviado, mas o app permaneceu em "Carregando suas informações..." por ${DEFAULT_TIMEOUT}s. Verifique a captura de tela anexada e os logs do backend.
+    END
+
+    ${usuario_invalido}=    Run Keyword And Return Status
+    ...    Wait Until Element Is Visible    ${LOGIN_TXT_USUARIO_INVALIDO}    1s
+    IF    ${usuario_invalido}
+        Fail    Login recusado: o app exibiu "Usuário inválida".
+    END
+
+    ${nao_autorizado}=    Run Keyword And Return Status
+    ...    Wait Until Element Is Visible    ${LOGIN_TXT_USUARIO_NAO_AUTORIZADO}    1s
+    IF    ${nao_autorizado}
+        Fail    Login recusado: o app exibiu "Não autorizado".
+    END
+
+    ${modal_erro}=    Run Keyword And Return Status
+    ...    Wait Until Element Is Visible    ${BOTAO_TENTAR_NOVAMENTE}    1s
+    IF    ${modal_erro}
+        Fail    Login não chegou à Home e o app exibiu um modal com opção de tentar novamente.
+    END
+
+    Fail    Login não chegou à Home em ${DEFAULT_TIMEOUT}s e nenhum erro conhecido foi identificado. Consulte a captura de tela anexada.
 
 Realizar login
     [Documentation]    Realiza o fluxo completo de login no aplicativo.
