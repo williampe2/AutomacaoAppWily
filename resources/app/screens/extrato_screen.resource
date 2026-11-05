@@ -11,7 +11,7 @@ ${EXTRATO_SALDO_DISPONIVEL}       xpath=//android.widget.TextView[@text="Saldo d
 ${EXTRATO_VALOR_SALDO}            xpath=//android.widget.TextView[@text="Saldo disponível"]/following-sibling::android.widget.TextView[starts-with(@text,"R$")][1]
 ${EXTRATO_TRANSFERIR_SALDO}       xpath=//android.view.ViewGroup[contains(@content-desc,"Transferir saldo")]
 ${EXTRATO_CHAVE_PIX}              xpath=//android.view.ViewGroup[contains(@content-desc,"Chave PIX")]
-${EXTRATO_VOLTAR_BOTAO}           xpath=//android.widget.ImageButton[@content-desc="Navegar para cima"]
+${EXTRATO_VOLTAR_BOTAO}           xpath=//android.widget.ImageButton[@content-desc="Navigate up"]
 
 # Tela Transferir saldo (PALPITES, falta o dump desta tela)
 ${TRANSFERIR_SALDO_TITULO}        xpath=//android.widget.TextView[@text="Nova transferência"]
