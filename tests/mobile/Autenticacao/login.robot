@@ -16,6 +16,7 @@ Cenario: Login com sucesso
     Preencher campos de Email    ${email_yaml}
     Preencher campos de senha    ${senha_yaml}
     Clicar em Entrar
+    Registrar estado da tela após enviar login
     ${existe_quiz}    Run Keyword And Return Status    Wait Until Element Is Visible    ${QUIZ_BTN_DEIXAR_DEPOIS_QUIZ}    5s
     IF    ${existe_quiz}
         Clicar em Deixar para depois

@@ -77,6 +77,22 @@ Clicar em Entrar
     Wait Until Element Is Visible    ${LOGIN_BTN_ENTRAR}    10s
     Click Element                    ${LOGIN_BTN_ENTRAR}
 
+Registrar estado da tela após enviar login
+    [Documentation]    Registra apenas indicadores de estado, sem expor o XML nem os dados digitados.
+    ${nivel_log}=    Set Log Level    WARN
+    TRY
+        ${fonte}=    Get Source
+        ${campo_senha}=    Evaluate    bool(re.search(r'login-password-input', $fonte, re.I))    modules=re
+        ${home}=    Evaluate    bool(re.search(r'resource-id="menu"', $fonte, re.I))    modules=re
+        ${carregando}=    Evaluate    bool(re.search(r'Carregando suas informações|Loading', $fonte, re.I))    modules=re
+        ${erro_credenciais}=    Evaluate    bool(re.search(r'(usu[aá]rio|senha).{0,40}(inv[aá]lid|incorret)|(inv[aá]lid|incorret).{0,40}(usu[aá]rio|senha)|credential|unauthori[sz]ed', $fonte, re.I))    modules=re
+        ${erro_rede}=    Evaluate    bool(re.search(r'network|rede|conex[aã]o|connection|internet|timeout|servidor|server', $fonte, re.I))    modules=re
+        ${erro_generico}=    Evaluate    bool(re.search(r'erro|error|falha|failed', $fonte, re.I))    modules=re
+    FINALLY
+        Set Log Level    ${nivel_log}
+    END
+    Log To Console    \nLogin UI flags after submit: password_field=${campo_senha}, home_menu=${home}, loading=${carregando}, credential_error=${erro_credenciais}, network_error=${erro_rede}, generic_error=${erro_generico}
+
 Verificar se o login foi realizado com sucesso
     [Documentation]    Confirma a Home e identifica estados de falha conhecidos após o login.
     ${home_visivel}=    Run Keyword And Return Status
