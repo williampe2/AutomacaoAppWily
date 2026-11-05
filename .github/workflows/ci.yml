@@ -180,7 +180,7 @@ jobs:
           export EXECUCAO=browserstack
           export BS_LOCAL=true
           export BROWSERSTACK_LOCAL_IDENTIFIER="$BS_LOCAL_IDENTIFIER"
-          python -m robot -d results 
+          python -m robot -d results tests/e2e/Tests/vistoria_e2e.robot
 
       - name: Parar túnel BrowserStack Local
         if: always()
