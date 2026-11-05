@@ -49,18 +49,15 @@ jobs:
       - name: Diagnóstico de rede do runner
         continue-on-error: true
         env:
-          API_LOGIN_URL: ${{ secrets.API_LOGIN_URL }}
+          BR_PROXY_HOST: ${{ secrets.BR_PROXY_HOST }}
         run: |
-          echo "IP e país de saída do runner:"
+          echo "IP, país e organização de saída do runner:"
           curl -s --max-time 15 https://ipinfo.io/json || echo "Falha ao consultar ipinfo.io"
           echo
-          if [[ -n "${API_LOGIN_URL:-}" ]]; then
-            echo "Testando a API de login a partir do runner:"
-            curl -s -o /dev/null --max-time 20 \
-              -w "HTTP %{http_code} em %{time_total}s\n" \
-              "$API_LOGIN_URL" || echo "Timeout ou falha ao acessar a API"
+          if [[ -n "${BR_PROXY_HOST:-}" ]]; then
+            echo "Proxy BR configurado: o túnel vai sair por ele."
           else
-            echo "Secret API_LOGIN_URL não configurado; pulando teste da API."
+            echo "Sem proxy BR: o túnel vai sair pelo IP do runner."
           fi
 
       - name: Instalar BrowserStack Local
@@ -88,11 +85,24 @@ jobs:
             exit 1
           fi
 
-          "$tunnel" \
-            --key "$BROWSERSTACK_ACCESS_KEY" \
-            --local-identifier "$BS_LOCAL_IDENTIFIER" \
-            --force-local \
-            --verbose 1 >"$log_file" 2>&1 &
+          args=(
+            --key "$BROWSERSTACK_ACCESS_KEY"
+            --local-identifier "$BS_LOCAL_IDENTIFIER"
+            --force-local
+            --verbose 1
+          )
+
+          # Proxy brasileiro opcional (só se os secrets existirem)
+          if [[ -n "${BR_PROXY_HOST:-}" && -n "${BR_PROXY_PORT:-}" ]]; then
+            args+=(--local-proxy-host "$BR_PROXY_HOST" --local-proxy-port "$BR_PROXY_PORT")
+            if [[ -n "${BR_PROXY_USER:-}" ]]; then
+              args+=(--local-proxy-user "$BR_PROXY_USER" --local-proxy-pass "$BR_PROXY_PASS")
+            fi
+            args+=(--force-proxy)
+            echo "Túnel usando proxy BR."
+          fi
+
+          "$tunnel" "${args[@]}" >"$log_file" 2>&1 &
           tunnel_pid=$!
           printf '%s\n' "$tunnel_pid" > "$pid_file"
 
@@ -114,6 +124,10 @@ jobs:
           exit 1
         env:
           BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+          BR_PROXY_HOST: ${{ secrets.BR_PROXY_HOST }}
+          BR_PROXY_PORT: ${{ secrets.BR_PROXY_PORT }}
+          BR_PROXY_USER: ${{ secrets.BR_PROXY_USER }}
+          BR_PROXY_PASS: ${{ secrets.BR_PROXY_PASS }}
 
       - name: Executar login no BrowserStack
         env:
