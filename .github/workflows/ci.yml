@@ -11,14 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
 
-    env:
-      EXECUCAO: browserstack
-      BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
-      BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
-      BS_APP_URL: ${{ secrets.BS_APP_URL }}
-      BS_BUILD_NAME: ${{ github.workflow }}-${{ github.run_number }}
-      BS_LOCAL: "true"
-
     steps:
       - name: Checkout do código
         uses: actions/checkout@v4
@@ -54,7 +46,18 @@ jobs:
           
 
       - name: Executar login no BrowserStack
+        env:
+          BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
+          BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+          BS_APP_URL: ${{ secrets.BS_APP_URL }}
+          BS_BUILD_NAME: ${{ github.workflow }}-${{ github.run_number }}
         run: |
+          : "${BROWSERSTACK_USERNAME:?Configure o secret BROWSERSTACK_USERNAME}"
+          : "${BROWSERSTACK_ACCESS_KEY:?Configure o secret BROWSERSTACK_ACCESS_KEY}"
+          : "${BS_APP_URL:?Configure o secret BS_APP_URL}"
+          export BROWSERSTACK_USERNAME BROWSERSTACK_ACCESS_KEY BS_APP_URL
+          export EXECUCAO=browserstack
+          export BS_LOCAL=true
           python -m robot -d results tests/mobile/Autenticacao/login.robot
 
       - name: Parar túnel BrowserStack Local
