@@ -48,10 +48,20 @@ Registrar rótulos de autenticação na tela atual
     Log To Console    \nRótulos da tela de autenticação: ${rotulos}
 
 Preencher campos de Email
-    [Documentation]    Preenche o usuário email
+    [Documentation]    Preenche o e-mail. No BrowserStack envia teclas W3C ao campo focado.
     [Arguments]                      ${EMAIL_WILY}
     Wait Until Element Is Visible    ${LOGIN_INPUT_USERNAME}    10s
-    Input Text                       ${LOGIN_INPUT_USERNAME}    ${EMAIL_WILY}
+    ${bs}=    Executando no BrowserStack
+    IF    ${bs}
+        Click Element    ${LOGIN_INPUT_USERNAME}
+        ${lib}=       Get Library Instance    AppiumLibrary
+        ${driver}=    Call Method             ${lib}    _current_application
+        Evaluate
+        ...    selenium.webdriver.common.action_chains.ActionChains($driver).send_keys($EMAIL_WILY).perform()
+        ...    modules=selenium.webdriver.common.action_chains
+    ELSE
+        Input Text    ${LOGIN_INPUT_USERNAME}    ${EMAIL_WILY}
+    END
     Esconder teclado
     Click Element                    ${LOGIN_BTN_AVANCAR}
 
