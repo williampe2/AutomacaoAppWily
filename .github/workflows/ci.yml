@@ -8,7 +8,7 @@ on:
 
 jobs:
   robot-tests:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
 
     steps:
@@ -53,6 +53,7 @@ jobs:
           BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
           BS_APP_URL: ${{ secrets.BS_APP_URL }}
           BS_BUILD_NAME: ${{ github.workflow }}-${{ github.run_number }}
+          BS_GPS_LOCATION: "-7.0769,-41.4672"
         run: |
           : "${BROWSERSTACK_USERNAME:?Configure o secret BROWSERSTACK_USERNAME}"
           : "${BROWSERSTACK_ACCESS_KEY:?Configure o secret BROWSERSTACK_ACCESS_KEY}"
