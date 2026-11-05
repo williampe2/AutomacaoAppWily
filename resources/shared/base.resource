@@ -58,6 +58,7 @@ Montar capabilities BrowserStack
     ...    BS_GPS_LOCATION no formato "latitude,longitude" (padrão: Rua Getúlio Vargas, Picos-PI).
     ...    BS_GEO_LOCATION é o código do país do IP de saída (padrão: BR).
     ...    BROWSERSTACK_LOCAL_IDENTIFIER é o nome do túnel (vazio = túnel sem nome).
+    ...    networkLogs permanece desativado para evitar interceptação TLS em APIs com certificate pinning.
     [Arguments]    ${no_reset}
     ${local}=    Evaluate    '%{BS_LOCAL=true}'.lower() == 'true'
     &{opts}=    Create Dictionary
@@ -68,7 +69,7 @@ Montar capabilities BrowserStack
     ...    sessionName=%{BS_SESSION_NAME=login}
     ...    local=${local}
     ...    gpsLocation=%{BS_GPS_LOCATION=-7.0769,-41.4672}
-    ...    networkLogs=${True}
+    ...    networkLogs=${False}
     ${local_id}=    Get Environment Variable    BROWSERSTACK_LOCAL_IDENTIFIER    default=${EMPTY}
     IF    '${local_id}' != ''
         Set To Dictionary    ${opts}    localIdentifier=${local_id}
