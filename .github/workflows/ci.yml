@@ -15,10 +15,15 @@ jobs:
       - name: Checkout do código
         uses: actions/checkout@v4
 
+      - name: Preparar cache local do Python
+        run: mkdir -p "${RUNNER_TEMP}/toolcache"
+
       - name: Configurar Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+        env:
+          RUNNER_TOOL_CACHE: ${{ runner.temp }}/toolcache
 
       - name: Instalar dependências
         run: |
