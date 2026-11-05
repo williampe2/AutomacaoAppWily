@@ -52,20 +52,22 @@ jobs:
       # AJUSTE os nomes das chaves para os que o seu aprovar_transacao.resource espera.
       - name: Gerar config/secrets.yaml
         env:
-          WEB_USER: ${{ secrets.WEB_USER }}
-          WEB_PASS: ${{ secrets.WEB_PASS }}
+          WEB_USERNAME: ${{ secrets.WEB_USERNAME }}
+          WEB_PASSWORD: ${{ secrets.WEB_PASSWORD }}
         run: |
           set -euo pipefail
-          : "${WEB_USER:?Configure o secret WEB_USER}"
-          : "${WEB_PASS:?Configure o secret WEB_PASS}"
+          : "${WEB_USERNAME:?Configure o secret WEB_USERNAME}"
+          : "${WEB_PASSWORD:?Configure o secret WEB_PASSWORD}"
           mkdir -p config
           python - <<'PY'
           import json, os
           dados = {
-              "WEB_USER": os.environ["WEB_USER"],
-              "WEB_PASS": os.environ["WEB_PASS"],
+              "web_login": {
+                  "username": os.environ["WEB_USERNAME"],
+                  "password": os.environ["WEB_PASSWORD"],
+              }
           }
-          # JSON é YAML válido e escapa aspas/caracteres especiais com segurança
+          # JSON é YAML válido e escapa caracteres especiais (como !!) com segurança
           with open("config/secrets.yaml", "w", encoding="utf-8") as f:
               json.dump(dados, f, ensure_ascii=False, indent=2)
           print("config/secrets.yaml gerado.")
