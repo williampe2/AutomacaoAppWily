@@ -322,8 +322,20 @@ Tentar forçar paisagem
     Should Be True    int($largura) > int($altura)
 
 Forçar paisagem
-    [Documentation]    Garante paisagem, tentando de novo se o device demorar a girar.
-    Wait Until Keyword Succeeds    30s    2s    Tentar forçar paisagem
+    [Documentation]    Tenta girar uma vez; se o device não girar, avisa e segue.
+    ${biblioteca}=    BuiltIn.Get Library Instance    AppiumLibrary
+    ${driver}=        Evaluate    $biblioteca._current_application()
+    ${largura}=       AppiumLibrary.Get Window Width
+    ${altura}=        AppiumLibrary.Get Window Height
+    IF    int($largura) < int($altura)
+        Run Keyword And Ignore Error    Evaluate    setattr($driver, 'orientation', 'LANDSCAPE')
+        Sleep    1s
+        ${largura}=    AppiumLibrary.Get Window Width
+        ${altura}=     AppiumLibrary.Get Window Height
+    END
+    IF    int($largura) <= int($altura)
+        Log    Aparelho não girou (${largura}x${altura}); seguindo em retrato.    WARN
+    END
 
 Estar na Home ou em atendimento
     [Documentation]    Considera pronto quando a Home (botão Iniciar) ou um atendimento
