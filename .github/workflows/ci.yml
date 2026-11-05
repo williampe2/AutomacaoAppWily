@@ -6,9 +6,14 @@ on:
   pull_request:
     branches: [ main, master, integration ]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   robot-tests:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
     env:
       BS_LOCAL_IDENTIFIER: ci-${{ github.run_id }}-${{ github.run_attempt }}
@@ -23,6 +28,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          cache: 'pip'
 
       - name: Instalar dependências
         run: |
@@ -39,6 +45,23 @@ jobs:
               raise SystemExit(f'Pastas ausentes: {missing}')
           print('Estrutura base OK')
           PY
+
+      - name: Diagnóstico de rede do runner
+        continue-on-error: true
+        env:
+          API_LOGIN_URL: ${{ secrets.API_LOGIN_URL }}
+        run: |
+          echo "IP e país de saída do runner:"
+          curl -s --max-time 15 https://ipinfo.io/json || echo "Falha ao consultar ipinfo.io"
+          echo
+          if [[ -n "${API_LOGIN_URL:-}" ]]; then
+            echo "Testando a API de login a partir do runner:"
+            curl -s -o /dev/null --max-time 20 \
+              -w "HTTP %{http_code} em %{time_total}s\n" \
+              "$API_LOGIN_URL" || echo "Timeout ou falha ao acessar a API"
+          else
+            echo "Secret API_LOGIN_URL não configurado; pulando teste da API."
+          fi
 
       - name: Instalar BrowserStack Local
         run: |
@@ -170,5 +193,3 @@ jobs:
         with:
           name: robot-results
           path: results/
-
-          

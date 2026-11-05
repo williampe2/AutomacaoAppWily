@@ -13,7 +13,7 @@ jobs:
     env:
       BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
       BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
-      BROWSERSTACK_APP_ID: bs://43c472b094da76089c1fce234d35f409ca09f4ff
+      BROWSERSTACK_APP_ID: bs://a613bd831630b612cc5f349ce905dda4d31da72b
 
     steps:
       - name: Checkout da branch Integration
