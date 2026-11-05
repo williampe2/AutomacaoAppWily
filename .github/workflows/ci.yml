@@ -65,6 +65,8 @@ jobs:
         uses: browserstack/github-actions/setup-local@master
         with:
           local-testing: stop
+        env:
+          BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
 
       - name: Publicar resultados
         if: always()
