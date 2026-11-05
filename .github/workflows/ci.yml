@@ -12,7 +12,7 @@ concurrency:
 
 jobs:
   robot-tests:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     timeout-minutes: 30
     if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
     env:
