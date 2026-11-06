@@ -12,6 +12,7 @@ Cenario: Login com sucesso
     [Tags]    mobile    smoke    # smoke é um teste rápido que valida se o app está funcionando, sem entrar em detalhes de funcionalidades.
     ${email_yaml}     Set Variable    ${usuarios}[wily_DA][usuario_app]
     ${senha_yaml}     Set Variable    ${usuarios}[wily_DA][senha_app]
+    Aceitar permissão de notificação se aparecer
     Registrar rótulos de autenticação na tela atual
     Clicar em Acessar Conta
     Preencher campos de Email    ${email_yaml}

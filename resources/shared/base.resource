@@ -108,3 +108,10 @@ Conectar ao Banco de Dados
 
 Desconectar do Banco de Dados
     Disconnect From Database
+
+Aceitar permissão de notificação se aparecer
+    ${botao}=    Set Variable    id=com.android.permissioncontroller:id/permission_allow_button
+    ${visivel}=    Aparece na tela    ${botao}    5s
+    IF    ${visivel}
+        Clicar quando visível    ${botao}
+    END

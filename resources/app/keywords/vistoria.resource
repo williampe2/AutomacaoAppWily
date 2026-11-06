@@ -259,9 +259,16 @@ Adicionar foto
     Confirmar foto           ${foto}
 
 Abrir câmera pelo modal
-    [Documentation]    No modal "Adicionar mídia", toca em "Câmera" e aguarda a câmera abrir.
+    [Documentation]    No modal "Adicionar mídia", toca em "Câmera", aguarda a câmera
+    ...    abrir e confere que está em paisagem (as coordenadas do disparo são de paisagem).
     Clicar quando visível        ${VISTORIA_BTN_CAMERA}
     Aguardar elemento visível    ${VISTORIA_TEXTO_ZOOM_CAMERA}
+    Wait Until Keyword Succeeds    10s    1s    Câmera deve estar em paisagem
+
+Câmera deve estar em paisagem
+    ${paisagem}=    Estar em paisagem
+    Should Be True    ${paisagem}
+    ...    msg=A câmera abriu em retrato; o clique de disparo usaria coordenadas erradas.
 
 Injetar vídeo na câmera
     [Documentation]    Injeta o vídeo enviado pelo CI (BS_VIDEO_URL) como feed da câmera.
@@ -330,15 +337,14 @@ Ficar offline
 
 # ---------- Sessão ----------
 Preparar sessão de vistoria
-    [Documentation]    Abre o app em paisagem (todo o fluxo de vistoria roda assim, pois a
-    ...    câmera exige) e deixa na Home ou em atendimento.
-    Abrir aplicativo    no_reset=${True}    orientacao=LANDSCAPE
-    Garantir paisagem
+    [Documentation]    Abre o app (a orientação é controlada pelo próprio app; a câmera
+    ...    vai para paisagem sozinha) e deixa na Home ou em atendimento.
+    Abrir aplicativo    no_reset=${True}
     ${welcome}=    Aparece na tela    ${LOGIN_BTN_ACESSAR_CONTA}    15s
     IF    ${welcome}
         Clicar quando visível    ${LOGIN_BTN_ACESSAR_CONTA}
     END
-    # TODO: chamar aqui o keyword de login do app (entrada_no_app.resource)
+    # TODO: login do app (entrada_no_app.resource)
     Wait Until Keyword Succeeds    ${DEFAULT_TIMEOUT}s    2s    Estar na Home ou em atendimento
 
 Estar na Home ou em atendimento
