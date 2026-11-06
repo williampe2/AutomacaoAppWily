@@ -26,8 +26,8 @@ Abrir Aplicativo Wily no Emulador
 
 Abrir aplicativo
     [Documentation]    Abre o app no destino definido por EXECUCAO (local | browserstack).
-    ...    Por padrão usa o no_reset do YAML e orientação retrato.
-    [Arguments]    ${no_reset}=${app}[no_reset]    ${orientacao}=PORTRAIT
+    ...    Por padrão usa o no_reset do YAML e orientação paisagem.
+    [Arguments]    ${no_reset}=${app}[no_reset]    ${orientacao}=LANDSCAPE
     IF    '%{EXECUCAO=local}' == 'browserstack'
         ${url}    ${caps}=    Montar capabilities BrowserStack    ${no_reset}    ${orientacao}
     ELSE
@@ -51,7 +51,8 @@ Montar capabilities local
     RETURN    http://127.0.0.1:4723    ${caps}
 
 Montar capabilities BrowserStack
-    [Arguments]    ${no_reset}    ${orientacao}=PORTRAIT
+    [Arguments]    ${no_reset}    ${orientacao}=LANDSCAPE
+    ${orientacao_bs}=    Evaluate    $orientacao.lower()
     ${local}=    Evaluate    '%{BS_LOCAL=true}'.lower() == 'true'
     &{opts}=    Create Dictionary
     ...    userName=%{BROWSERSTACK_USERNAME}
@@ -62,7 +63,7 @@ Montar capabilities BrowserStack
     ...    local=${local}
     ...    gpsLocation=%{BS_GPS_LOCATION=-7.0769,-41.4672}
     ...    networkLogs=${False}
-    ...    deviceOrientation=${orientacao}
+    ...    deviceOrientation=${orientacao_bs}
     ${local_id}=    Get Environment Variable    BROWSERSTACK_LOCAL_IDENTIFIER    default=${EMPTY}
     IF    '${local_id}' != ''
         Set To Dictionary    ${opts}    localIdentifier=${local_id}

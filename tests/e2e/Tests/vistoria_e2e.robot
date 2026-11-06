@@ -1,7 +1,7 @@
 *** Settings ***
 Documentation     Fluxo End-to-End: conclui a vistoria no app (Appium) e aprova a transação no sistema WEB (Selenium).
-Library           AppiumLibrary
-Library           SeleniumLibrary
+Library           AppiumLibrary    run_on_failure=AppiumLibrary.Capture Page Screenshot
+Library           SeleniumLibrary  run_on_failure=SeleniumLibrary.Capture Page Screenshot
 Resource          ../../../resources/shared/base.resource
 Resource          ../../../resources/app/keywords/entrada_no_app.resource
 Resource          ../../../resources/app/keywords/vistoria.resource
