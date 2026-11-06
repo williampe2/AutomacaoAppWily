@@ -161,8 +161,9 @@ Arrastar slider de aceite
 Rolar até Iniciar vistoria
     [Documentation]    Rola a tela do atendimento até o botão "Iniciar vistoria" ficar visível.
     Aguardar elemento visível    ${VISTORIA_ETAPA_CAMINHE}
-    ${visivel}=    Aparece na tela    ${VISTORIA_BTN_INICIAR_VISTORIA}    2s
-    IF    not ${visivel}
+    FOR    ${tentativa}    IN RANGE    10
+        ${visivel}=    Aparece na tela    ${VISTORIA_BTN_INICIAR_VISTORIA}    2s
+        Exit For Loop If    ${visivel}
         Deslizar para cima    0.8    0.3    ${700}
     END
     Aguardar elemento visível    ${VISTORIA_BTN_INICIAR_VISTORIA}
