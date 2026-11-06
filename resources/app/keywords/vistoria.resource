@@ -32,18 +32,24 @@ Aguardar elemento visível
     ...    AppiumLibrary.Wait Until Element Is Visible    ${locator}    3s
 
 Conceder acesso à câmera se solicitado
-    [Documentation]    Confirma a tela explicativa do app e aceita o diálogo Android de câmera, se exibidos.
+    [Documentation]    Toca no botão inferior da tela explicativa (não exposto na árvore Appium)
+    ...    e aceita o diálogo Android de câmera, se exibidos.
     ${aviso}=    Run Keyword And Return Status
     ...    AppiumLibrary.Wait Until Element Is Visible    ${VISTORIA_TELA_ACESSO_CAMERA}    2s
     IF    not ${aviso}    RETURN
-    Clicar quando visível    ${VISTORIA_BTN_CONCEDER_CAMERA}    5s
+    ${largura}=    AppiumLibrary.Get Window Width
+    ${altura}=     AppiumLibrary.Get Window Height
+    ${x}=          Evaluate    int(int($largura) * 0.5)
+    ${y}=          Evaluate    int(int($altura) * 0.95)
+    &{coordenadas}=    Create Dictionary    x=${x}    y=${y}
+    AppiumLibrary.Execute Script    mobile: clickGesture    &{coordenadas}
     ${dialogo}=    Run Keyword And Return Status
-    ...    AppiumLibrary.Wait Until Element Is Visible    ${VISTORIA_DIALOGO_PERMISSAO_CAMERA_ALLOW}    3s
+    ...    AppiumLibrary.Wait Until Element Is Visible    ${VISTORIA_DIALOGO_PERMISSAO_CAMERA_ALLOW}    5s
     IF    ${dialogo}
         AppiumLibrary.Click Element    ${VISTORIA_DIALOGO_PERMISSAO_CAMERA_ALLOW}
     END
     ${aviso_restante}=    Run Keyword And Return Status
-    ...    AppiumLibrary.Wait Until Element Is Visible    ${VISTORIA_TELA_ACESSO_CAMERA}    2s
+    ...    AppiumLibrary.Wait Until Element Is Visible    ${VISTORIA_TELA_ACESSO_CAMERA}    3s
     IF    ${aviso_restante}
         Fail    A tela de acesso à câmera do app continuou visível após tocar em "Conceder permissão".
     END
