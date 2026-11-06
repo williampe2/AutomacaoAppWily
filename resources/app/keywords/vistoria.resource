@@ -183,14 +183,11 @@ Enviar fotos
     Aguardar elemento visível    ${VISTORIA_TITULO_ENVIAR_VISTORIA}
 
 Completar mídias e concluir
-    [Documentation]    Preenche as fotos da categoria "Referência" e o vídeo:
-    ...    as 3 fotos visíveis ao abrir (referencia, aproximada e centralizada),
-    ...    depois rola a tela até o fim e captura a foto aberta e o vídeo.
-    ...    Cada inclusão remove o botão vazio; o próximo é sempre o primeiro "add-media".
+    [Documentation]    Captura em sequência nos slots de referência, aproximada,
+    ...    centralizada e aberta, depois adiciona o vídeo.
     Adicionar foto    ${VISTORIA_ADD_REFERENCIA}      ${VISTORIA_FOTO_REFERENCIA}
     Adicionar foto    ${VISTORIA_ADD_APROXIMADA}      ${VISTORIA_FOTO_APROXIMADA}
     Adicionar foto    ${VISTORIA_ADD_CENTRALIZADA}    ${VISTORIA_FOTO_CENTRALIZADA}
-    Rolar tela de mídias até o fim
     Adicionar foto    ${VISTORIA_ADD_ABERTA}          ${VISTORIA_FOTO_ABERTA}
     Rolar até slot    ${VISTORIA_ADD_VIDEO}
     Adicionar vídeo
@@ -249,6 +246,7 @@ Adicionar foto
     [Documentation]    Abre o modal "Adicionar mídia" pelo botão da categoria, escolhe
     ...    a Câmera, tira e confirma a foto.
     [Arguments]    ${botao_adicionar}    ${foto}
+    Rolar até slot    ${botao_adicionar}
     Clicar quando visível    ${botao_adicionar}
     Abrir câmera pelo modal
     Confirmar foto           ${foto}
