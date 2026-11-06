@@ -203,6 +203,7 @@ Completar mídias e concluir
     [Documentation]    Preenche as fotos da categoria "Referência" e o vídeo:
     ...    as 3 fotos visíveis ao abrir (referencia, aproximada e centralizada),
     ...    depois rola a tela até o fim e captura a foto aberta e o vídeo.
+    ...    Cada inclusão remove o botão vazio; o próximo é sempre o primeiro "add-media".
     Adicionar foto    ${VISTORIA_ADD_REFERENCIA}      ${VISTORIA_FOTO_REFERENCIA}
     Adicionar foto    ${VISTORIA_ADD_APROXIMADA}      ${VISTORIA_FOTO_APROXIMADA}
     Adicionar foto    ${VISTORIA_ADD_CENTRALIZADA}    ${VISTORIA_FOTO_CENTRALIZADA}

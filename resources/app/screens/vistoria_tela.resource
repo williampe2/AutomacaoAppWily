@@ -34,8 +34,8 @@ ${ICONE_NUVEM_VERDE}                 ${{chr(0xE2BF)}}
 ${ICONE_NUVEM_CINZA}                 ${{chr(0xE2C3)}}
 ${VISTORIA_XPATH_VIDEO_NUVEM_VERDE}  //*[@resource-id="media-Videos-0" and contains(@content-desc, "${ICONE_NUVEM_VERDE}")]
 ${VISTORIA_VIDEO_TILE}               xpath=//*[@resource-id="media-Videos-0"]
-${VISTORIA_ADD_FOTOS_IDEAIS}         xpath=(//android.widget.TextView[@text="Fotos ideais"]/following::android.view.ViewGroup[@resource-id="add-media"])[1]
-${VISTORIA_ADD_FOTOS_GUIADAS}        xpath=(//android.widget.TextView[@text="Fotos guiadas"]/following::android.view.ViewGroup[@resource-id="add-media"])[1]
+${VISTORIA_ADD_FOTOS_IDEAIS}         android=new UiSelector().resourceId("add-media").instance(0)
+${VISTORIA_ADD_FOTOS_GUIADAS}        android=new UiSelector().resourceId("add-media").instance(0)
 ${VISTORIA_FOTO_IDEAL}               xpath=//*[@resource-id="media-free-photo-0"]
 ${VISTORIA_FOTO_GUIADA}              xpath=//*[@resource-id="media-Fotos guiadas-0"]
 ${VISTORIA_TXT_UPLOAD_EM_PROGRESSO}  xpath=//*[@text="Upload em progresso" or @content-desc="Upload em progresso"]
@@ -46,11 +46,11 @@ ${VISTORIA_TXT_VISTORIA_APROVADA}    xpath=//*[@text="Tudo certo com sua vistori
 ${VISTORIA_BTN_BUSCAR_VISTORIA}      xpath=//*[@resource-id="search-button" or @content-desc="Buscar vistoria"]
 ${VISTORIA_HOME_BTN_INICIAR}         xpath=//*[@resource-id="start-button"]
 ${VISTORIA_BTN_PROSSEGUIR_APROVACAO}    xpath=//*[@clickable="true" and (contains(@text,"Continuar") or contains(@content-desc,"Continuar") or contains(@text,"Prosseguir") or contains(@content-desc,"Prosseguir") or contains(@text,"Voltar para início") or contains(@content-desc,"Voltar para início") or contains(@text,"Ir para o início") or contains(@content-desc,"Ir para o início") or contains(@text,"Entendi") or contains(@content-desc,"Entendi"))]
-${VISTORIA_ADD_REFERENCIA}           xpath=(//android.widget.TextView[@text="Foto de referencia"]/following::android.view.ViewGroup[@resource-id="add-media"])[1]
-${VISTORIA_ADD_APROXIMADA}           xpath=(//android.widget.TextView[@text="Foto aproximada"]/following::android.view.ViewGroup[@resource-id="add-media"])[1]
-${VISTORIA_ADD_CENTRALIZADA}         xpath=(//android.widget.TextView[@text="Foto centralizada"]/following::android.view.ViewGroup[@resource-id="add-media"])[1]
-${VISTORIA_ADD_ABERTA}               xpath=(//android.widget.TextView[@text="Foto aberta"]/following::android.view.ViewGroup[@resource-id="add-media"])[1]
-${VISTORIA_ADD_VIDEO}                xpath=(//android.widget.TextView[@text="Videos" or @text="Vídeos"]/following::android.view.ViewGroup[@resource-id="add-media"])[1]
+${VISTORIA_ADD_REFERENCIA}           android=new UiSelector().resourceId("add-media").instance(0)
+${VISTORIA_ADD_APROXIMADA}           android=new UiSelector().resourceId("add-media").instance(0)
+${VISTORIA_ADD_CENTRALIZADA}         android=new UiSelector().resourceId("add-media").instance(0)
+${VISTORIA_ADD_ABERTA}               android=new UiSelector().resourceId("add-media").instance(0)
+${VISTORIA_ADD_VIDEO}                android=new UiSelector().resourceId("add-media").instance(0)
 ${VISTORIA_FOTO_REFERENCIA}          xpath=//*[@resource-id="media-Foto de referencia-0"]
 ${VISTORIA_FOTO_APROXIMADA}          xpath=//*[@resource-id="media-Foto aproximada-0"]
 ${VISTORIA_FOTO_CENTRALIZADA}        xpath=//*[@resource-id="media-Foto centralizada-0"]
