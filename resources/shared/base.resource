@@ -18,7 +18,6 @@ Resource         ../app/keywords/entrada_no_app.resource
 Abrir Aplicativo Wily no Emulador
     [Documentation]    Abre o app no destino definido por EXECUCAO e garante que está na tela inicial.
     Abrir aplicativo
-    Aceitar permissão de notificações na inicialização
     ${botao_visivel}    Run Keyword And Return Status
     ...    Wait Until Element Is Visible    ${CADASTRO_BTN_CRIAR_CONTA}    3s
     IF    not ${botao_visivel}
@@ -38,6 +37,7 @@ Abrir aplicativo
     END
     Log To Console    \n>>> Destino: ${url}
     Open Application    ${url}    &{caps}
+    Aceitar permissão de notificações na inicialização
 
 Montar capabilities local
     [Arguments]    ${no_reset}
@@ -112,10 +112,22 @@ Desconectar do Banco de Dados
 
 Aceitar permissão de notificações na inicialização
     [Documentation]    Aceita o diálogo Android de notificações antes de iniciar os passos do teste.
-    ${permitir}=    Set Variable
-    ...    xpath=//*[@resource-id="com.android.permissioncontroller:id/permission_allow_button" or @resource-id="com.android.packageinstaller:id/permission_allow_button" or @text="Allow" or @text="Permitir"]
+    ${permitir}=    Set Variable    id=com.android.permissioncontroller:id/permission_allow_button
     ${dialogo_visivel}=    Run Keyword And Return Status
-    ...    Wait Until Element Is Visible    ${permitir}    3s
+    ...    AppiumLibrary.Wait Until Element Is Visible    ${permitir}    8s
+    IF    not ${dialogo_visivel}
+        ${permitir}=    Set Variable    xpath=//*[@text="Allow" or @text="Permitir"]
+        ${dialogo_visivel}=    Run Keyword And Return Status
+        ...    AppiumLibrary.Wait Until Element Is Visible    ${permitir}    2s
+    END
     IF    ${dialogo_visivel}
-        Click Element    ${permitir}
+        AppiumLibrary.Click Element    ${permitir}
+        ${ainda_visivel}=    Run Keyword And Return Status
+        ...    AppiumLibrary.Wait Until Element Is Visible    ${permitir}    2s
+        IF    ${ainda_visivel}
+            Fail    O diálogo de permissão de notificações continuou visível após tocar em Permitir.
+        END
+        Log To Console    Permissão de notificações aceita antes do início do teste.
+    ELSE
+        Log To Console    Diálogo de notificações não apareceu; nenhuma ação necessária.
     END
