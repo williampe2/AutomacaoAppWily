@@ -18,7 +18,10 @@ Aparece na tela
         ...    AppiumLibrary.Wait Until Element Is Visible    ${locator}    ${timeout}
         IF    $status == 'PASS'    RETURN    ${True}
         ${stale}=    Evaluate    'StaleElementReference' in $mensagem
-        IF    not ${stale}    RETURN    ${False}
+        IF    not ${stale}
+            Log    ${mensagem}    DEBUG
+            RETURN    ${False}
+        END
     END
     RETURN    ${False}
 
@@ -61,6 +64,36 @@ Deslizar para cima
     ${y_i}=        Evaluate    int(int($altura) * float($inicio_pct))
     ${y_f}=        Evaluate    int(int($altura) * float($fim_pct))
     AppiumLibrary.Swipe    start_x=${x}    start_y=${y_i}    end_x=${x}    end_y=${y_f}    duration=${duracao}
+
+# ---------- Orientação ----------
+Estar em paisagem
+    [Documentation]    Retorna True se a largura da tela for maior que a altura.
+    ${largura}=    AppiumLibrary.Get Window Width
+    ${altura}=     AppiumLibrary.Get Window Height
+    ${paisagem}=   Evaluate    int($largura) > int($altura)
+    RETURN    ${paisagem}
+
+Garantir paisagem
+    [Documentation]    Confere se o app está em paisagem. Se não estiver, tenta girar pelo
+    ...    driver (até 3 vezes). Falha com mensagem clara se não conseguir, para o
+    ...    teste não seguir em retrato e quebrar mais à frente.
+    ${biblioteca}=    BuiltIn.Get Library Instance    AppiumLibrary
+    ${driver}=        Evaluate    $biblioteca._current_application()
+    FOR    ${tentativa}    IN RANGE    3
+        ${paisagem}=    Estar em paisagem
+        IF    ${paisagem}    RETURN
+        ${status}    ${mensagem}=    Run Keyword And Ignore Error
+        ...    Evaluate    setattr($driver, 'orientation', 'LANDSCAPE')
+        IF    $status == 'FAIL'
+            Log    Falha ao girar (tentativa ${tentativa + 1}): ${mensagem}    WARN
+        END
+        Sleep    2s
+    END
+    ${paisagem}=    Estar em paisagem
+    ${largura}=     AppiumLibrary.Get Window Width
+    ${altura}=      AppiumLibrary.Get Window Height
+    Should Be True    ${paisagem}
+    ...    msg=O app não ficou em paisagem (tela ${largura}x${altura}). A rotação pode estar travada pelo app ou pelo device.
 
 # ---------- Início do turno ----------
 Iniciar
@@ -201,18 +234,17 @@ Rolar tela de mídias
     Deslizar para cima    0.75    0.35    ${600}
 
 Confirmar foto
-    [Documentation]    Dispara a câmera (botão central), confirma a foto capturada e
-    ...    garante que o app voltou para paisagem (a câmera pode devolvê-lo em retrato).
+    [Documentation]    Dispara a câmera (botão central) e confirma a foto capturada.
     [Arguments]    ${foto}
     Aguardar elemento visível    ${VISTORIA_TEXTO_ZOOM_CAMERA}
     Disparar câmera
     Clicar quando visível        ${VISTORIA_BTN_CONFIRMAR_FOTO}
-    Forçar paisagem
     Aguardar elemento visível    ${foto}
 
 Disparar câmera
     [Documentation]    Toca o botão central (disparo/gravação) da câmera. Não usar o
-    ...    botão de inverter câmera. O botão não tem id: usa-se a coordenada central medida.
+    ...    botão de inverter câmera. O botão não tem id: usa-se a coordenada central
+    ...    medida (em paisagem).
     ${x}=    Convert To Integer    ${VISTORIA_CAMERA_DISPARO_X}
     ${y}=    Convert To Integer    ${VISTORIA_CAMERA_DISPARO_Y}
     &{args}=    Create Dictionary    x=${x}    y=${y}
@@ -298,12 +330,15 @@ Ficar offline
 
 # ---------- Sessão ----------
 Preparar sessão de vistoria
-    Abrir aplicativo    no_reset=${True}
+    [Documentation]    Abre o app em paisagem (todo o fluxo de vistoria roda assim, pois a
+    ...    câmera exige) e deixa na Home ou em atendimento.
+    Abrir aplicativo    no_reset=${True}    orientacao=LANDSCAPE
+    Garantir paisagem
     ${welcome}=    Aparece na tela    ${LOGIN_BTN_ACESSAR_CONTA}    15s
     IF    ${welcome}
         Clicar quando visível    ${LOGIN_BTN_ACESSAR_CONTA}
     END
-    # login do app aqui (ver abaixo)
+    # TODO: chamar aqui o keyword de login do app (entrada_no_app.resource)
     Wait Until Keyword Succeeds    ${DEFAULT_TIMEOUT}s    2s    Estar na Home ou em atendimento
 
 Estar na Home ou em atendimento
@@ -319,4 +354,3 @@ Encerrar sessões E2E
     ...    são executados.
     Run Keyword And Ignore Error    SeleniumLibrary.Close All Browsers
     Run Keyword And Ignore Error    AppiumLibrary.Close Application
-

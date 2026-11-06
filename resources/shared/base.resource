@@ -26,18 +26,20 @@ Abrir Aplicativo Wily no Emulador
 
 Abrir aplicativo
     [Documentation]    Abre o app no destino definido por EXECUCAO (local | browserstack).
-    ...    Por padrão usa o no_reset do YAML e orientação paisagem.
-    [Arguments]    ${no_reset}=${app}[no_reset]    ${orientacao}=LANDSCAPE
+    ...    Por padrão usa o no_reset do YAML e orientação retrato.
+    ...    Para paisagem, passe orientacao=LANDSCAPE (no BrowserStack vira
+    ...    deviceOrientation; nenhuma capability de rotação é enviada ao Appium).
+    [Arguments]    ${no_reset}=${app}[no_reset]    ${orientacao}=PORTRAIT
     IF    '%{EXECUCAO=local}' == 'browserstack'
         ${url}    ${caps}=    Montar capabilities BrowserStack    ${no_reset}    ${orientacao}
     ELSE
-        ${url}    ${caps}=    Montar capabilities local    ${no_reset}    ${orientacao}
+        ${url}    ${caps}=    Montar capabilities local    ${no_reset}
     END
     Log To Console    \n>>> Destino: ${url}
     Open Application    ${url}    &{caps}
 
 Montar capabilities local
-    [Arguments]    ${no_reset}    ${orientacao}=PORTRAIT
+    [Arguments]    ${no_reset}
     &{caps}=    Create Dictionary
     ...    platformName=${app}[platform_name]
     ...    automationName=${app}[automation_name]
@@ -47,11 +49,10 @@ Montar capabilities local
     ...    udid=${app}[udid]
     ...    noReset=${no_reset}
     ...    autoGrantPermissions=${app}[auto_grant_permissions]
-    ...    orientation=${orientacao}
     RETURN    http://127.0.0.1:4723    ${caps}
 
 Montar capabilities BrowserStack
-    [Arguments]    ${no_reset}    ${orientacao}=LANDSCAPE
+    [Arguments]    ${no_reset}    ${orientacao}=PORTRAIT
     ${orientacao_bs}=    Evaluate    $orientacao.lower()
     ${local}=    Evaluate    '%{BS_LOCAL=true}'.lower() == 'true'
     &{opts}=    Create Dictionary
@@ -76,7 +77,6 @@ Montar capabilities BrowserStack
     ...    app=%{BS_APP_URL}
     ...    noReset=${no_reset}
     ...    autoGrantPermissions=${True}
-    ...    orientation=${orientacao}
     ...    bstack:options=${opts}
     RETURN    https://hub.browserstack.com/wd/hub    ${caps}
 
