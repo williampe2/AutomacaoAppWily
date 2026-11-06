@@ -352,7 +352,19 @@ Estar na Home ou em atendimento
     ...    em andamento ("Caminhe até o local") estiver visível.
     ${home}=     Aparece na tela    ${VISTORIA_BTN_INICIAR}     3s
     ${atend}=    Aparece na tela    ${VISTORIA_ETAPA_CAMINHE}   3s
-    Should Be True    ${home} or ${atend}
+    IF    not ($home or $atend)
+        Registrar estado da tela
+    END
+    Should Be True    $home or $atend
+
+Registrar estado da tela
+    [Documentation]    Loga activity atual, textos visíveis e screenshot, para diagnóstico.
+    ${activity}=    Run Keyword And Ignore Error    AppiumLibrary.Get Activity
+    Log    Activity: ${activity}[1]    WARN
+    ${fonte}=    AppiumLibrary.Get Source
+    ${textos}=    Evaluate    __import__('re').findall(r'(?:text|content-desc)="([^"]+)"', $fonte)
+    Log    Textos na tela: ${textos}    WARN
+    AppiumLibrary.Capture Page Screenshot
 
 Encerrar sessões E2E
     [Documentation]    Encerra a sessão do browser (Web) e do app (Appium). Cada passo é
