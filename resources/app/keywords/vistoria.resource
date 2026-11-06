@@ -78,36 +78,6 @@ Deslizar para cima
     ${y_f}=        Evaluate    int(int($altura) * float($fim_pct))
     AppiumLibrary.Swipe    start_x=${x}    start_y=${y_i}    end_x=${x}    end_y=${y_f}    duration=${duracao}
 
-# ---------- Orientação ----------
-Estar em paisagem
-    [Documentation]    Retorna True se a largura da tela for maior que a altura.
-    ${largura}=    AppiumLibrary.Get Window Width
-    ${altura}=     AppiumLibrary.Get Window Height
-    ${paisagem}=   Evaluate    int($largura) > int($altura)
-    RETURN    ${paisagem}
-
-Garantir paisagem
-    [Documentation]    Confere se o app está em paisagem. Se não estiver, tenta girar pelo
-    ...    driver (até 3 vezes). Falha com mensagem clara se não conseguir, para o
-    ...    teste não seguir em retrato e quebrar mais à frente.
-    ${biblioteca}=    BuiltIn.Get Library Instance    AppiumLibrary
-    ${driver}=        Evaluate    $biblioteca._current_application()
-    FOR    ${tentativa}    IN RANGE    3
-        ${paisagem}=    Estar em paisagem
-        IF    ${paisagem}    RETURN
-        ${status}    ${mensagem}=    Run Keyword And Ignore Error
-        ...    Evaluate    setattr($driver, 'orientation', 'LANDSCAPE')
-        IF    $status == 'FAIL'
-            Log    Falha ao girar (tentativa ${tentativa + 1}): ${mensagem}    WARN
-        END
-        Sleep    2s
-    END
-    ${paisagem}=    Estar em paisagem
-    ${largura}=     AppiumLibrary.Get Window Width
-    ${altura}=      AppiumLibrary.Get Window Height
-    Should Be True    ${paisagem}
-    ...    msg=O app não ficou em paisagem (tela ${largura}x${altura}). A rotação pode estar travada pelo app ou pelo device.
-
 # ---------- Início do turno ----------
 Iniciar
     [Documentation]    Inicia o turno tocando em "Iniciar" na Home. Se já houver um
@@ -261,11 +231,17 @@ Confirmar foto
     Aguardar elemento visível    ${foto}
 
 Disparar câmera
-    [Documentation]    Toca o botão central (disparo/gravação) da câmera. Não usar o
-    ...    botão de inverter câmera. O botão não tem id: usa-se a coordenada central
-    ...    medida (em paisagem).
-    ${x}=    Convert To Integer    ${VISTORIA_CAMERA_DISPARO_X}
-    ${y}=    Convert To Integer    ${VISTORIA_CAMERA_DISPARO_Y}
+    [Documentation]    Toca o obturador no centro da parte inferior da câmera, em retrato
+    ...    ou paisagem. O botão é desenhado sem locator acessível.
+    ${largura}=    AppiumLibrary.Get Window Width
+    ${altura}=     AppiumLibrary.Get Window Height
+    IF    $altura > $largura
+        ${x}=    Evaluate    int(int($largura) * 0.5)
+        ${y}=    Evaluate    int(int($altura) * 0.9)
+    ELSE
+        ${x}=    Evaluate    int(int($largura) * 0.9)
+        ${y}=    Evaluate    int(int($altura) * 0.5)
+    END
     &{args}=    Create Dictionary    x=${x}    y=${y}
     AppiumLibrary.Execute Script    mobile: clickGesture    &{args}
 
@@ -278,17 +254,10 @@ Adicionar foto
     Confirmar foto           ${foto}
 
 Abrir câmera pelo modal
-    [Documentation]    No modal "Adicionar mídia", toca em "Câmera", aguarda a câmera
-    ...    abrir e confere que está em paisagem (as coordenadas do disparo são de paisagem).
+    [Documentation]    No modal "Adicionar mídia", toca em "Câmera" e aguarda a câmera abrir.
     Clicar quando visível        ${VISTORIA_BTN_CAMERA}
     Conceder acesso à câmera se solicitado
     Aguardar elemento visível    ${VISTORIA_TEXTO_ZOOM_CAMERA}
-    Wait Until Keyword Succeeds    10s    1s    Câmera deve estar em paisagem
-
-Câmera deve estar em paisagem
-    ${paisagem}=    Estar em paisagem
-    Should Be True    ${paisagem}
-    ...    msg=A câmera abriu em retrato; o clique de disparo usaria coordenadas erradas.
 
 Injetar vídeo na câmera
     [Documentation]    Injeta o vídeo enviado pelo CI (BS_VIDEO_URL) como feed da câmera.

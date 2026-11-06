@@ -68,6 +68,4 @@ ${VISTORIA_BTN_CONFIRMAR_ABANDONO}   xpath=//android.view.ViewGroup[@content-des
 ${VISTORIA_BTN_FICAR_OFFLINE}        xpath=//android.view.ViewGroup[@content-desc="Ficar offline"]
 ${VISTORIA_BTN_RECUSAR}              id=reject-offer
 
-${VISTORIA_CAMERA_DISPARO_X}    360
-${VISTORIA_CAMERA_DISPARO_Y}    1353
 ${VISTORIA_VIDEO_MINIMO_SEGUNDOS}    16
