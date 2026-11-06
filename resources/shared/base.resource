@@ -38,7 +38,7 @@ Abrir aplicativo
     Log To Console    \n>>> Destino: ${url}
     Open Application    ${url}    &{caps}
     Aceitar permissão de notificações na inicialização
-    Conceder localização em segundo plano
+    Conceder permissões de localização e câmera
 
 Montar capabilities local
     [Arguments]    ${no_reset}
@@ -133,12 +133,13 @@ Aceitar permissão de notificações na inicialização
         Log To Console    Diálogo de notificações não apareceu; nenhuma ação necessária.
     END
 
-Conceder localização em segundo plano
-    [Documentation]    Concede e valida localização precisa e em segundo plano antes do fluxo do app.
+Conceder permissões de localização e câmera
+    [Documentation]    Concede e valida localização precisa, em segundo plano e acesso à câmera.
     @{permissoes}=    Create List
     ...    android.permission.ACCESS_COARSE_LOCATION
     ...    android.permission.ACCESS_FINE_LOCATION
     ...    android.permission.ACCESS_BACKGROUND_LOCATION
+    ...    android.permission.CAMERA
     &{opcoes}=    Create Dictionary
     ...    permissions=${permissoes}
     ...    action=grant
@@ -152,4 +153,4 @@ Conceder localização em segundo plano
     FOR    ${permissao}    IN    @{permissoes}
         Should Contain    ${concedidas}    ${permissao}
     END
-    Log To Console    Permissões de localização precisa e em segundo plano concedidas.
+    Log To Console    Permissões de localização e câmera concedidas.
