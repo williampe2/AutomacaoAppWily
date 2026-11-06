@@ -31,6 +31,23 @@ Aguardar elemento visível
     BuiltIn.Wait Until Keyword Succeeds    ${timeout}    1s
     ...    AppiumLibrary.Wait Until Element Is Visible    ${locator}    3s
 
+Conceder acesso à câmera se solicitado
+    [Documentation]    Confirma a tela explicativa do app e aceita o diálogo Android de câmera, se exibidos.
+    ${aviso}=    Run Keyword And Return Status
+    ...    AppiumLibrary.Wait Until Element Is Visible    ${VISTORIA_TELA_ACESSO_CAMERA}    2s
+    IF    not ${aviso}    RETURN
+    Clicar quando visível    ${VISTORIA_BTN_CONCEDER_CAMERA}    5s
+    ${dialogo}=    Run Keyword And Return Status
+    ...    AppiumLibrary.Wait Until Element Is Visible    ${VISTORIA_DIALOGO_PERMISSAO_CAMERA_ALLOW}    3s
+    IF    ${dialogo}
+        AppiumLibrary.Click Element    ${VISTORIA_DIALOGO_PERMISSAO_CAMERA_ALLOW}
+    END
+    ${aviso_restante}=    Run Keyword And Return Status
+    ...    AppiumLibrary.Wait Until Element Is Visible    ${VISTORIA_TELA_ACESSO_CAMERA}    2s
+    IF    ${aviso_restante}
+        Fail    A tela de acesso à câmera do app continuou visível após tocar em "Conceder permissão".
+    END
+
 Clicar quando visível
     [Documentation]    Espera o elemento ficar visível e clica, refazendo a busca a cada
     ...    tentativa. Tolera o redesenho da tela (StaleElementReferenceException).
@@ -268,6 +285,7 @@ Abrir câmera pelo modal
     [Documentation]    No modal "Adicionar mídia", toca em "Câmera", aguarda a câmera
     ...    abrir e confere que está em paisagem (as coordenadas do disparo são de paisagem).
     Clicar quando visível        ${VISTORIA_BTN_CAMERA}
+    Conceder acesso à câmera se solicitado
     Aguardar elemento visível    ${VISTORIA_TEXTO_ZOOM_CAMERA}
     Wait Until Keyword Succeeds    10s    1s    Câmera deve estar em paisagem
 
@@ -346,6 +364,7 @@ Preparar sessão de vistoria
     [Documentation]    Abre o app (a orientação é controlada pelo próprio app; a câmera
     ...    vai para paisagem sozinha) e deixa na Home ou em atendimento.
     Abrir aplicativo    no_reset=${True}
+    Conceder acesso à câmera se solicitado
     ${welcome}=    Aparece na tela    ${LOGIN_BTN_ACESSAR_CONTA}    15s
     IF    ${welcome}
         Clicar quando visível    ${LOGIN_BTN_ACESSAR_CONTA}
@@ -353,6 +372,7 @@ Preparar sessão de vistoria
         Preencher campos de senha    ${usuarios}[wily_DA][senha_app]
         Clicar em Entrar
         Verificar se o login foi realizado com sucesso
+        Conceder acesso à câmera se solicitado
     END
     Wait Until Keyword Succeeds    ${DEFAULT_TIMEOUT}s    2s    Estar na Home ou em atendimento
 
