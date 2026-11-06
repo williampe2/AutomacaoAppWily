@@ -18,6 +18,7 @@ Resource         ../app/keywords/entrada_no_app.resource
 Abrir Aplicativo Wily no Emulador
     [Documentation]    Abre o app no destino definido por EXECUCAO e garante que está na tela inicial.
     Abrir aplicativo
+    Aceitar permissão de notificações na inicialização
     ${botao_visivel}    Run Keyword And Return Status
     ...    Wait Until Element Is Visible    ${CADASTRO_BTN_CRIAR_CONTA}    3s
     IF    not ${botao_visivel}
@@ -108,3 +109,13 @@ Conectar ao Banco de Dados
 
 Desconectar do Banco de Dados
     Disconnect From Database
+
+Aceitar permissão de notificações na inicialização
+    [Documentation]    Aceita o diálogo Android de notificações antes de iniciar os passos do teste.
+    ${permitir}=    Set Variable
+    ...    xpath=//*[@resource-id="com.android.permissioncontroller:id/permission_allow_button" or @resource-id="com.android.packageinstaller:id/permission_allow_button" or @text="Allow" or @text="Permitir"]
+    ${dialogo_visivel}=    Run Keyword And Return Status
+    ...    Wait Until Element Is Visible    ${permitir}    3s
+    IF    ${dialogo_visivel}
+        Click Element    ${permitir}
+    END
