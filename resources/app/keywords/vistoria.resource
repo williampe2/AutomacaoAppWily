@@ -350,3 +350,4 @@ Encerrar sessões E2E
     ...    são executados.
     Run Keyword And Ignore Error    SeleniumLibrary.Close All Browsers
     Run Keyword And Ignore Error    AppiumLibrary.Close Application
+
