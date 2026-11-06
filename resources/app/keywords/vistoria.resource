@@ -273,9 +273,11 @@ Injetar vídeo na câmera
 
 Adicionar vídeo
     [Documentation]    Abre o modal "Adicionar mídia" da seção Vídeos, injeta o vídeo no
-    ...    feed da câmera (BrowserStack), escolhe a Câmera, grava ao menos 16s
+    ...    feed da câmera (BrowserStack), gira o dispositivo para paisagem, escolhe a
+    ...    Câmera, grava ao menos 16s
     ...    (o app exige no mínimo 15s) e confirma o vídeo.
     Clicar no campo de vídeo
+    Colocar dispositivo em paisagem
     Injetar vídeo na câmera
     Abrir câmera pelo modal
     Disparar câmera
@@ -283,6 +285,20 @@ Adicionar vídeo
     Disparar câmera
     Clicar quando visível        ${VISTORIA_BTN_CONFIRMAR_FOTO}
     Aguardar elemento visível    ${VISTORIA_VIDEO_TILE}
+
+Colocar dispositivo em paisagem
+    [Documentation]    Gira o dispositivo antes de abrir a câmera de vídeo e confirma a rotação.
+    ${biblioteca}=    BuiltIn.Get Library Instance    AppiumLibrary
+    ${driver}=    Evaluate    $biblioteca._current_application()
+    Evaluate    setattr($driver, 'orientation', 'LANDSCAPE')
+    BuiltIn.Wait Until Keyword Succeeds    10s    1s    Verificar orientação paisagem
+
+Verificar orientação paisagem
+    ${largura}=    AppiumLibrary.Get Window Width
+    ${altura}=     AppiumLibrary.Get Window Height
+    ${paisagem}=   Evaluate    int($largura) > int($altura)
+    Should Be True    ${paisagem}
+    ...    msg=O dispositivo não girou para paisagem antes da gravação de vídeo (${largura}x${altura}).
 
 Clicar no campo de vídeo
     [Documentation]    Clica no botão add-media logo abaixo do título da seção "Videos".
