@@ -37,6 +37,7 @@ ${ICONE_NUVEM_VERDE}                 ${{chr(0xE2BF)}}
 ${ICONE_NUVEM_CINZA}                 ${{chr(0xE2C3)}}
 ${VISTORIA_XPATH_VIDEO_NUVEM_VERDE}  //*[@resource-id="media-Videos-0" and contains(@content-desc, "${ICONE_NUVEM_VERDE}")]
 ${VISTORIA_VIDEO_TILE}               xpath=//*[@resource-id="media-Videos-0"]
+${VISTORIA_TITULO_VIDEO}             xpath=//*[@text="Videos"]
 ${VISTORIA_ADD_FOTOS_IDEAIS}         android=new UiSelector().resourceId("add-media").instance(0)
 ${VISTORIA_ADD_FOTOS_GUIADAS}        android=new UiSelector().resourceId("add-media").instance(0)
 ${VISTORIA_FOTO_IDEAL}               xpath=//*[@resource-id="media-free-photo-0"]
@@ -53,7 +54,6 @@ ${VISTORIA_ADD_REFERENCIA}           android=new UiSelector().resourceId("add-me
 ${VISTORIA_ADD_APROXIMADA}           android=new UiSelector().resourceId("add-media").instance(1)
 ${VISTORIA_ADD_CENTRALIZADA}         android=new UiSelector().resourceId("add-media").instance(2)
 ${VISTORIA_ADD_ABERTA}               android=new UiSelector().resourceId("add-media").instance(3)
-${VISTORIA_ADD_VIDEO}                android=new UiSelector().resourceId("add-media").instance(4)
 ${VISTORIA_FOTO_REFERENCIA}          xpath=//*[@resource-id="media-Foto de referencia-0"]
 ${VISTORIA_FOTO_APROXIMADA}          xpath=//*[@resource-id="media-Foto aproximada-0"]
 ${VISTORIA_FOTO_CENTRALIZADA}        xpath=//*[@resource-id="media-Foto centralizada-0"]

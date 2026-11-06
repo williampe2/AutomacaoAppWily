@@ -190,7 +190,6 @@ Completar mídias e concluir
     Adicionar foto    ${VISTORIA_ADD_APROXIMADA}      ${VISTORIA_FOTO_APROXIMADA}
     Adicionar foto    ${VISTORIA_ADD_CENTRALIZADA}    ${VISTORIA_FOTO_CENTRALIZADA}
     Adicionar foto    ${VISTORIA_ADD_ABERTA}          ${VISTORIA_FOTO_ABERTA}
-    Rolar até slot    ${VISTORIA_ADD_VIDEO}
     Adicionar vídeo
     Rolar tela de mídias até o fim
     Aguardar vídeo enviado
@@ -276,7 +275,7 @@ Adicionar vídeo
     [Documentation]    Abre o modal "Adicionar mídia" da seção Vídeos, injeta o vídeo no
     ...    feed da câmera (BrowserStack), escolhe a Câmera, grava ao menos 16s
     ...    (o app exige no mínimo 15s) e confirma o vídeo.
-    Clicar quando visível    ${VISTORIA_ADD_VIDEO}
+    Clicar no campo de vídeo
     Injetar vídeo na câmera
     Abrir câmera pelo modal
     Disparar câmera
@@ -284,6 +283,33 @@ Adicionar vídeo
     Disparar câmera
     Clicar quando visível        ${VISTORIA_BTN_CONFIRMAR_FOTO}
     Aguardar elemento visível    ${VISTORIA_VIDEO_TILE}
+
+Clicar no campo de vídeo
+    [Documentation]    Clica no botão add-media logo abaixo do título da seção "Videos".
+    ...    O índice dos botões muda conforme as seções fora da tela são recicladas.
+    FOR    ${tentativa}    IN RANGE    6
+        ${visivel}=    Aparece na tela    ${VISTORIA_TITULO_VIDEO}    2s
+        Exit For Loop If    ${visivel}
+        Rolar tela de mídias
+    END
+    Aguardar elemento visível    ${VISTORIA_TITULO_VIDEO}
+    ${titulo}=    AppiumLibrary.Get Element Location    ${VISTORIA_TITULO_VIDEO}
+    ${tamanho_titulo}=    AppiumLibrary.Get Element Size    ${VISTORIA_TITULO_VIDEO}
+    ${limite_y}=    Evaluate    int($titulo['y'] + $tamanho_titulo['height'])
+    @{botoes_adicionar}=    AppiumLibrary.Get Webelements    xpath=//*[@resource-id="add-media"]
+    ${botao_video}=    Set Variable    ${None}
+    FOR    ${botao}    IN    @{botoes_adicionar}
+        ${local}=    AppiumLibrary.Get Element Location    ${botao}
+        ${y}=    Evaluate    int($local['y'])
+        IF    $y > $limite_y
+            ${botao_video}=    Set Variable    ${botao}
+            Exit For Loop
+        END
+    END
+    IF    $botao_video is None
+        Fail    Não encontrei o campo de envio de vídeo abaixo do título "Videos".
+    END
+    AppiumLibrary.Click Element    ${botao_video}
 
 Aguardar vídeo enviado
     [Documentation]    Aguarda o upload do vídeo terminar. O tile do vídeo exibe uma
