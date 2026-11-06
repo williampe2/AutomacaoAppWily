@@ -185,8 +185,13 @@ Rolar até Iniciar vistoria
     Aguardar elemento visível    ${VISTORIA_BTN_INICIAR_VISTORIA}
 
 Iniciar vistoria
-    [Documentation]    Inicia a vistoria no atendimento aceito.
+    [Documentation]    Inicia a vistoria e rola até o botão "Enviar fotos" ficar visível.
     Clicar quando visível        ${VISTORIA_BTN_INICIAR_VISTORIA}
+    FOR    ${tentativa}    IN RANGE    6
+        ${visivel}=    Aparece na tela    ${VISTORIA_BTN_ENVIAR_FOTOS}    2s
+        Exit For Loop If    ${visivel}
+        Deslizar para cima    0.8    0.3    ${700}
+    END
     Aguardar elemento visível    ${VISTORIA_BTN_ENVIAR_FOTOS}
 
 Enviar fotos

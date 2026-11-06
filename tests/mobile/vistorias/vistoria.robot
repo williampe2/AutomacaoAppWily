@@ -13,7 +13,6 @@ Vistoria Deve Ser Aceita E Concluída
     Aceitar oferta
     Rolar até Iniciar vistoria
     Iniciar vistoria
-    Deslizar para cima
     Enviar fotos
     Completar mídias e concluir
 
