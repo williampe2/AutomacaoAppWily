@@ -273,13 +273,13 @@ Injetar vídeo na câmera
 
 Adicionar vídeo
     [Documentation]    Abre o modal "Adicionar mídia" da seção Vídeos, injeta o vídeo no
-    ...    feed da câmera (BrowserStack), gira o dispositivo para paisagem, escolhe a
-    ...    Câmera, grava ao menos 16s
+    ...    feed da câmera (BrowserStack), abre a Câmera, gira o dispositivo para paisagem,
+    ...    grava ao menos 16s
     ...    (o app exige no mínimo 15s) e confirma o vídeo.
     Clicar no campo de vídeo
-    Colocar dispositivo em paisagem
     Injetar vídeo na câmera
     Abrir câmera pelo modal
+    Colocar dispositivo em paisagem
     Disparar câmera
     BuiltIn.Sleep    ${VISTORIA_VIDEO_MINIMO_SEGUNDOS}s
     Disparar câmera
