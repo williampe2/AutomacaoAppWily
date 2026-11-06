@@ -31,37 +31,37 @@ Esconder teclado
             Evaluate    $driver.press_keycode(4)
         END
     ELSE
-        Hide Keyboard
+        AppiumLibrary.Hide Keyboard
     END
     
 
 # ---------- Login ----------
 Clicar em Acessar Conta
     [Documentation]    Clica no botão "Acessar Conta" na tela de login.
-    Wait Until Element Is Visible    ${LOGIN_BTN_ACESSAR_CONTA}    10s
-    Click Element                    ${LOGIN_BTN_ACESSAR_CONTA}
+    AppiumLibrary.Wait Until Element Is Visible    ${LOGIN_BTN_ACESSAR_CONTA}    10s
+    AppiumLibrary.Click Element                    ${LOGIN_BTN_ACESSAR_CONTA}
 
 Registrar rótulos de autenticação na tela atual
     [Documentation]    Registra apenas rótulos relacionados à autenticação antes de inserir credenciais.
-    ${fonte}=    Get Source
+    ${fonte}=    AppiumLibrary.Get Source
     ${rotulos}=    Evaluate    re.findall(r'(?:content-desc|text)="([^"]*(?:conta|login|entrar|criar)[^"]*)"', $fonte, re.I)    modules=re
     Log To Console    \nRótulos da tela de autenticação: ${rotulos}
 
 Preencher campos de Email
     [Documentation]    Preenche o usuário email
     [Arguments]                      ${EMAIL_WILY}
-    Wait Until Element Is Visible    ${LOGIN_INPUT_USERNAME}    10s
-    Input Text                       ${LOGIN_INPUT_USERNAME}    ${EMAIL_WILY}
+    AppiumLibrary.Wait Until Element Is Visible    ${LOGIN_INPUT_USERNAME}    10s
+    AppiumLibrary.Input Text                       ${LOGIN_INPUT_USERNAME}    ${EMAIL_WILY}
     Esconder teclado
-    Click Element                    ${LOGIN_BTN_AVANCAR}
+    AppiumLibrary.Click Element                    ${LOGIN_BTN_AVANCAR}
 
 Preencher campos de senha
     [Documentation]    Local: digita caractere a caractere via adb (como era). BrowserStack:
     ...    envia as teclas por ações W3C (ActionChains), gerando eventos reais de teclado.
     ...    Isso dispara o onChangeText do React Native, que o Input Password não dispara.
     [Arguments]                      ${SENHA_WILY}
-    Wait Until Element Is Visible    ${LOGIN_INPUT_PASSWORD}    10s
-    Click Element                    ${LOGIN_INPUT_PASSWORD}
+    AppiumLibrary.Wait Until Element Is Visible    ${LOGIN_INPUT_PASSWORD}    10s
+    AppiumLibrary.Click Element                    ${LOGIN_INPUT_PASSWORD}
     ${bs}=    Executando no BrowserStack
     IF    ${bs}
         ${lib}=       Get Library Instance    AppiumLibrary
@@ -80,14 +80,14 @@ Preencher campos de senha
 
 Clicar em Entrar
     [Documentation]    Clica no botão "Entrar" na tela de login.
-    Wait Until Element Is Visible    ${LOGIN_BTN_ENTRAR}    10s
-    Click Element                    ${LOGIN_BTN_ENTRAR}
+    AppiumLibrary.Wait Until Element Is Visible    ${LOGIN_BTN_ENTRAR}    10s
+    AppiumLibrary.Click Element                    ${LOGIN_BTN_ENTRAR}
 
 Registrar estado da tela após enviar login
     [Documentation]    Registra apenas indicadores de estado, sem expor o XML nem os dados digitados.
     ${nivel_log}=    Set Log Level    WARN
     TRY
-        ${fonte}=    Get Source
+        ${fonte}=    AppiumLibrary.Get Source
         ${campo_senha}=    Evaluate    bool(re.search(r'login-password-input', $fonte, re.I))    modules=re
         ${home}=    Evaluate    bool(re.search(r'resource-id="menu"', $fonte, re.I))    modules=re
         ${carregando}=    Evaluate    bool(re.search(r'Carregando suas informações|Loading', $fonte, re.I))    modules=re
@@ -102,31 +102,31 @@ Registrar estado da tela após enviar login
 Verificar se o login foi realizado com sucesso
     [Documentation]    Confirma a Home e identifica estados de falha conhecidos após o login.
     ${home_visivel}=    Run Keyword And Return Status
-    ...    Wait Until Element Is Visible    ${HOME_BTN_MENU}    ${DEFAULT_TIMEOUT}s
+    ...    AppiumLibrary.Wait Until Element Is Visible    ${HOME_BTN_MENU}    ${DEFAULT_TIMEOUT}s
     IF    ${home_visivel}
         RETURN
     END
 
     ${carregando}=    Run Keyword And Return Status
-    ...    Wait Until Element Is Visible    ${LOGIN_TXT_CARREGANDO}    1s
+    ...    AppiumLibrary.Wait Until Element Is Visible    ${LOGIN_TXT_CARREGANDO}    1s
     IF    ${carregando}
         Fail    Login enviado, mas o app permaneceu em "Carregando suas informações..." por ${DEFAULT_TIMEOUT}s.
     END
 
     ${usuario_invalido}=    Run Keyword And Return Status
-    ...    Wait Until Element Is Visible    ${LOGIN_TXT_USUARIO_INVALIDO}    1s
+    ...    AppiumLibrary.Wait Until Element Is Visible    ${LOGIN_TXT_USUARIO_INVALIDO}    1s
     IF    ${usuario_invalido}
         Fail    Login recusado: o app exibiu "Usuário inválida".
     END
 
     ${nao_autorizado}=    Run Keyword And Return Status
-    ...    Wait Until Element Is Visible    ${LOGIN_TXT_USUARIO_NAO_AUTORIZADO}    1s
+    ...    AppiumLibrary.Wait Until Element Is Visible    ${LOGIN_TXT_USUARIO_NAO_AUTORIZADO}    1s
     IF    ${nao_autorizado}
         Fail    Login recusado: o app exibiu "Não autorizado".
     END
 
     ${modal_erro}=    Run Keyword And Return Status
-    ...    Wait Until Element Is Visible    ${BOTAO_TENTAR_NOVAMENTE}    1s
+    ...    AppiumLibrary.Wait Until Element Is Visible    ${BOTAO_TENTAR_NOVAMENTE}    1s
     IF    ${modal_erro}
         Fail    Login não chegou à Home e o app exibiu um modal com opção de tentar novamente.
     END

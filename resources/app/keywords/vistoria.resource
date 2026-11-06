@@ -343,8 +343,11 @@ Preparar sessão de vistoria
     ${welcome}=    Aparece na tela    ${LOGIN_BTN_ACESSAR_CONTA}    15s
     IF    ${welcome}
         Clicar quando visível    ${LOGIN_BTN_ACESSAR_CONTA}
+        Preencher campos de Email    ${usuarios}[wily_DA][usuario_app]
+        Preencher campos de senha    ${usuarios}[wily_DA][senha_app]
+        Clicar em Entrar
+        Verificar se o login foi realizado com sucesso
     END
-    # TODO: login do app (entrada_no_app.resource)
     Wait Until Keyword Succeeds    ${DEFAULT_TIMEOUT}s    2s    Estar na Home ou em atendimento
 
 Estar na Home ou em atendimento
