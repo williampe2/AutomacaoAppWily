@@ -38,6 +38,7 @@ Abrir aplicativo
     Log To Console    \n>>> Destino: ${url}
     Open Application    ${url}    &{caps}
     Aceitar permissão de notificações na inicialização
+    Conceder localização em segundo plano
 
 Montar capabilities local
     [Arguments]    ${no_reset}
@@ -131,3 +132,24 @@ Aceitar permissão de notificações na inicialização
     ELSE
         Log To Console    Diálogo de notificações não apareceu; nenhuma ação necessária.
     END
+
+Conceder localização em segundo plano
+    [Documentation]    Concede e valida localização precisa e em segundo plano antes do fluxo do app.
+    @{permissoes}=    Create List
+    ...    android.permission.ACCESS_COARSE_LOCATION
+    ...    android.permission.ACCESS_FINE_LOCATION
+    ...    android.permission.ACCESS_BACKGROUND_LOCATION
+    &{opcoes}=    Create Dictionary
+    ...    permissions=${permissoes}
+    ...    action=grant
+    ...    target=pm
+    AppiumLibrary.Execute Script    mobile: changePermissions    &{opcoes}
+
+    &{consulta}=    Create Dictionary
+    ...    type=granted
+    ...    appPackage=${app}[app_package]
+    ${concedidas}=    AppiumLibrary.Execute Script    mobile: getPermissions    &{consulta}
+    FOR    ${permissao}    IN    @{permissoes}
+        Should Contain    ${concedidas}    ${permissao}
+    END
+    Log To Console    Permissões de localização precisa e em segundo plano concedidas.
