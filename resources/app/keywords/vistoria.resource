@@ -242,8 +242,8 @@ Disparar câmera
         ${x}=    Evaluate    int(int($largura) * 0.9)
         ${y}=    Evaluate    int(int($altura) * 0.5)
     END
-    &{args}=    Create Dictionary    x=${x}    y=${y}
-    AppiumLibrary.Execute Script    mobile: clickGesture    &{args}
+    @{coordenadas}=    Create List    ${x}    ${y}
+    AppiumLibrary.Tap    ${coordenadas}
 
 Adicionar foto
     [Documentation]    Abre o modal "Adicionar mídia" pelo botão da categoria, escolhe
