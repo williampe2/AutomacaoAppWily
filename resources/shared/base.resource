@@ -79,7 +79,7 @@ Montar capabilities BrowserStack
     ...    app=%{BS_APP_URL}
     ...    noReset=${no_reset}
     ...    appium:autoGrantPermissions=${True}
-    ...    browserstack.enableCameraVideoInjection=${True}
+    ...    browserstack:enableCameraVideoInjection=${True}
     ...    bstack:options=${opts}
     RETURN    https://hub.browserstack.com/wd/hub    ${caps}
 
