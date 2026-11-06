@@ -48,7 +48,7 @@ Montar capabilities local
     ...    deviceName=${app}[device_name]
     ...    udid=${app}[udid]
     ...    noReset=${no_reset}
-    ...    autoGrantPermissions=${app}[auto_grant_permissions]
+    ...    appium:autoGrantPermissions=${app}[auto_grant_permissions]
     RETURN    http://127.0.0.1:4723    ${caps}
 
 Montar capabilities BrowserStack
@@ -76,7 +76,7 @@ Montar capabilities BrowserStack
     ...    platformVersion=%{BS_OS_VERSION=13.0}
     ...    app=%{BS_APP_URL}
     ...    noReset=${no_reset}
-    ...    autoGrantPermissions=${True}
+    ...    appium:autoGrantPermissions=${True}
     ...    bstack:options=${opts}
     RETURN    https://hub.browserstack.com/wd/hub    ${caps}
 
@@ -108,10 +108,3 @@ Conectar ao Banco de Dados
 
 Desconectar do Banco de Dados
     Disconnect From Database
-
-Aceitar permissão de notificação se aparecer
-    ${botao}=    Set Variable    id=com.android.permissioncontroller:id/permission_allow_button
-    ${visivel}=    Aparece na tela    ${botao}    5s
-    IF    ${visivel}
-        Clicar quando visível    ${botao}
-    END
