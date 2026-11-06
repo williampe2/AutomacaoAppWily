@@ -142,6 +142,7 @@ Conceder permissões de localização e câmera
     ...    android.permission.CAMERA
     &{opcoes}=    Create Dictionary
     ...    permissions=${permissoes}
+    ...    appPackage=${app}[app_package]
     ...    action=grant
     ...    target=pm
     AppiumLibrary.Execute Script    mobile: changePermissions    &{opcoes}
@@ -152,5 +153,6 @@ Conceder permissões de localização e câmera
     ${concedidas}=    AppiumLibrary.Execute Script    mobile: getPermissions    &{consulta}
     FOR    ${permissao}    IN    @{permissoes}
         Should Contain    ${concedidas}    ${permissao}
+        ...    msg=Android não concedeu ${permissao} ao app ${app}[app_package].
     END
     Log To Console    Permissões de localização e câmera concedidas.
