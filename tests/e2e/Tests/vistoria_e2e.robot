@@ -22,6 +22,7 @@ Vistoria Deve Ser Concluída E Aprovada No WEB
     Aceitar oferta
     Rolar até Iniciar vistoria
     Iniciar vistoria
+    Deslizar para cima
     Enviar fotos
     Completar mídias e concluir
 
