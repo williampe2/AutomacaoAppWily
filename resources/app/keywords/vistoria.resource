@@ -164,7 +164,7 @@ Rolar até Iniciar vistoria
     FOR    ${tentativa}    IN RANGE    10
         ${visivel}=    Aparece na tela    ${VISTORIA_BTN_INICIAR_VISTORIA}    2s
         Exit For Loop If    ${visivel}
-        Deslizar para cima    0.8    0.3    ${700}
+        Deslizar para cima    0.8    0.3    700ms
     END
     Aguardar elemento visível    ${VISTORIA_BTN_INICIAR_VISTORIA}
 
@@ -174,7 +174,7 @@ Iniciar vistoria
     FOR    ${tentativa}    IN RANGE    6
         ${visivel}=    Aparece na tela    ${VISTORIA_BTN_ENVIAR_FOTOS}    2s
         Exit For Loop If    ${visivel}
-        Deslizar para cima    0.8    0.3    ${700}
+        Deslizar para cima    0.8    0.3    700ms
     END
     Aguardar elemento visível    ${VISTORIA_BTN_ENVIAR_FOTOS}
 
@@ -217,7 +217,7 @@ Rolar até slot
 
 Rolar tela de mídias
     [Documentation]    Swipe único para cima na área de mídias.
-    Deslizar para cima    0.75    0.35    ${600}
+    Deslizar para cima    0.75    0.35    600ms
 
 Confirmar foto
     [Documentation]    Dispara a câmera (botão central) e confirma a foto capturada.
@@ -228,19 +228,10 @@ Confirmar foto
     Aguardar elemento visível    ${foto}
 
 Disparar câmera
-    [Documentation]    Toca o obturador no centro da parte inferior da câmera, em retrato
-    ...    ou paisagem. O botão é desenhado sem locator acessível.
-    ${largura}=    AppiumLibrary.Get Window Width
-    ${altura}=     AppiumLibrary.Get Window Height
-    IF    $altura > $largura
-        ${x}=    Evaluate    int(int($largura) * 0.5)
-        ${y}=    Evaluate    int(int($altura) * 0.9)
-    ELSE
-        ${x}=    Evaluate    int(int($largura) * 0.9)
-        ${y}=    Evaluate    int(int($altura) * 0.5)
-    END
-    @{coordenadas}=    Create List    ${x}    ${y}
-    AppiumLibrary.Tap    ${coordenadas}
+    [Documentation]    Toca o obturador da câmera (foto). O botão não tem resource-id
+    ...    nem content-desc, então é achado pela estrutura do XML (ViewGroup clicável
+    ...    cujo filho não tem elementos dentro).
+    Clicar quando visível    ${VISTORIA_BTN_OBTURADOR}
 
 Adicionar foto
     [Documentation]    Abre o modal "Adicionar mídia" pelo botão da categoria, escolhe
@@ -273,43 +264,41 @@ Injetar vídeo na câmera
 
 Adicionar vídeo
     [Documentation]    Abre o modal "Adicionar mídia" da seção Vídeos, injeta o vídeo no
-    ...    feed da câmera (BrowserStack), aguarda o feed iniciar, abre a Câmera e grava
-    ...    ao menos 16s
-    ...    (o app exige no mínimo 15s) e confirma o vídeo.
+    ...    feed da câmera (BrowserStack), abre a Câmera, grava ao menos 16s (o app
+    ...    exige no mínimo 15s) com 2s de folga e confirma o vídeo.
     Clicar no campo de vídeo
     Injetar vídeo na câmera
     BuiltIn.Sleep    3s
     Abrir câmera pelo modal
-    BuiltIn.Sleep    2s
+    BuiltIn.Sleep    3s
     Tocar botão de gravação
-    Registrar estado da tela
-    BuiltIn.Sleep    ${VISTORIA_VIDEO_MINIMO_SEGUNDOS}s
+    ${duracao}=    Evaluate    int(${VISTORIA_VIDEO_MINIMO_SEGUNDOS}) + 2
+    BuiltIn.Sleep    ${duracao}s
     Tocar botão de gravação
-    Registrar estado da tela
-    Clicar quando visível        ${VISTORIA_BTN_CONFIRMAR_FOTO}
+    Clicar quando visível        ${VISTORIA_BTN_CONFIRMAR_FOTO}    20s
     Aguardar elemento visível    ${VISTORIA_VIDEO_TILE}
 
 Tocar botão de gravação
-    [Documentation]    Usa o botão acessível de gravar; se não estiver exposto no XML,
-    ...    toca o obturador pela posição relativa observada na tela da câmera.
-    ${botao_visivel}=    Aparece na tela    ${VISTORIA_BTN_GRAVAR_VIDEO}    2s
-    IF    ${botao_visivel}
-        Clicar quando visível    ${VISTORIA_BTN_GRAVAR_VIDEO}
+    [Documentation]    Toca o obturador para iniciar ou parar a gravação. É o mesmo
+    ...    botão da foto. Se o locator estrutural falhar, usa a coordenada de fallback.
+    ${achou}=    Aparece na tela    ${VISTORIA_BTN_OBTURADOR}    3s
+    IF    ${achou}
+        Clicar quando visível    ${VISTORIA_BTN_OBTURADOR}
         RETURN
     END
-    Log    Botão de gravação sem locator acessível; usando toque pela posição da tela.    WARN
+    Log    Obturador não encontrado pelo XML; usando toque por coordenada.    WARN
+    Tocar obturador por coordenada
+
+Tocar obturador por coordenada
+    [Documentation]    Fallback: toque nativo no centro do obturador (x=0.5, y=0.94 da
+    ...    altura, medido no XML em retrato 1080x2115).
     ${largura}=    AppiumLibrary.Get Window Width
     ${altura}=     AppiumLibrary.Get Window Height
-    IF    $altura > $largura
-        ${x}=    Evaluate    int(int($largura) * 0.5)
-        ${y}=    Evaluate    int(int($altura) * 0.83)
-    ELSE
-        ${x}=    Evaluate    int(int($largura) * 0.9)
-        ${y}=    Evaluate    int(int($altura) * 0.5)
-    END
-    Log    Tocando gravação em (${x}, ${y}) na tela ${largura}x${altura}.
-    @{coordenadas}=    Create List    ${x}    ${y}
-    AppiumLibrary.Tap    ${coordenadas}
+    ${x}=    Evaluate    int(int($largura) * 0.5)
+    ${y}=    Evaluate    int(int($altura) * 0.94)
+    Log    Tocando obturador em (${x}, ${y}) na tela ${largura}x${altura}.
+    &{args}=    Create Dictionary    x=${x}    y=${y}
+    AppiumLibrary.Execute Script    mobile: clickGesture    &{args}
 
 Clicar no campo de vídeo
     [Documentation]    Clica no botão add-media logo abaixo do título da seção "Videos".

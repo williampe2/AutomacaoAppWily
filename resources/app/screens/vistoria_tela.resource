@@ -45,6 +45,8 @@ ${VISTORIA_FOTO_GUIADA}              xpath=//*[@resource-id="media-Fotos guiadas
 ${VISTORIA_TXT_UPLOAD_EM_PROGRESSO}  xpath=//*[@text="Upload em progresso" or @content-desc="Upload em progresso"]
 ${VISTORIA_BTN_AGUARDAR_UPLOAD}      xpath=//*[@resource-id="error-modal-close" or @content-desc="Aguardar upload"]
 ${VISTORIA_TXT_AGUARDANDO_DIAGNOSTICO}    xpath=//*[@text="Aguardando diagnóstico" or @content-desc="Aguardando diagnóstico"]
+${VISTORIA_BTN_OBTURADOR}    xpath=//android.view.ViewGroup[@clickable="true"][./android.view.ViewGroup[not(*)]]
+
 # Tela de sucesso exibida no app após a vistoria ser aprovada no WEB
 ${VISTORIA_TXT_VISTORIA_APROVADA}    xpath=//*[@text="Tudo certo com sua vistoria!" or @content-desc="Tudo certo com sua vistoria!"]
 ${VISTORIA_BTN_BUSCAR_VISTORIA}      xpath=//*[@resource-id="search-button" or @content-desc="Buscar vistoria"]
