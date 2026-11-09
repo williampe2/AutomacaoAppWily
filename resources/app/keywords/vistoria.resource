@@ -287,6 +287,8 @@ Adicionar foto
 
 Abrir câmera pelo modal
     [Documentation]    No modal "Adicionar mídia", toca em "Câmera" e aguarda a câmera abrir.
+    ...    Injeta o feed antes de abrir a câmera (só no BrowserStack).
+    Injetar vídeo na câmera
     Clicar quando visível        ${VISTORIA_BTN_CAMERA}
     Conceder acesso à câmera se solicitado
     Aguardar elemento visível    ${VISTORIA_TEXTO_ZOOM_CAMERA}
