@@ -341,7 +341,7 @@ Adicionar vídeo
     Tocar botão de gravação
     ${duracao}=    Evaluate    int(${VISTORIA_VIDEO_MINIMO_SEGUNDOS}) + 2
     BuiltIn.Sleep    ${duracao}s
-    Parar gravação pelo gesto
+    Parar gravação com toque firme
     Clicar quando visível        ${VISTORIA_BTN_CONFIRMAR_FOTO}    20s
     Aguardar elemento visível    ${VISTORIA_VIDEO_TILE}
 
@@ -475,16 +475,16 @@ Parar gravação
     ${confirmar}=    Aparece na tela    ${VISTORIA_BTN_CONFIRMAR_FOTO}    5s
     Should Be True    ${confirmar}    msg=Não consegui parar a gravação: o botão de confirmar não apareceu.
 
-Parar gravação pelo gesto
-    [Documentation]    Toca no obturador com gesto nativo (centro em 50% da largura e
-    ...    96% da altura, medido no XML do Pixel 1080x2219). Repete até o cronômetro sumir.
+Parar gravação com toque firme
+    [Documentation]    Toca no obturador com um toque de 300ms (em vez de toque instantâneo)
+    ...    e repete até o cronômetro da gravação sumir (até 3 vezes).
     ${largura}=    AppiumLibrary.Get Window Width
     ${altura}=     AppiumLibrary.Get Window Height
     ${x}=    Evaluate    int(int($largura) * 0.5)
     ${y}=    Evaluate    int(int($altura) * 0.96)
     FOR    ${tentativa}    IN RANGE    3
-        &{args}=    Create Dictionary    x=${x}    y=${y}
-        AppiumLibrary.Execute Script    mobile: clickGesture    &{args}
+        &{args}=    Create Dictionary    x=${x}    y=${y}    duration=300
+        AppiumLibrary.Execute Script    mobile: longClickGesture    &{args}
         BuiltIn.Sleep    2s
         ${gravando}=    Aparece na tela    xpath=//android.widget.TextView[contains(@text,"00:00:")]    1s
         Exit For Loop If    not ${gravando}
