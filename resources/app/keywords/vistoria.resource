@@ -316,18 +316,15 @@ Injetar vídeo na câmera
     AppiumLibrary.Execute Script    ${script}
 
 Adicionar vídeo
-    [Documentation]    Abre o modal "Adicionar mídia" da seção Vídeos, injeta o vídeo no
-    ...    feed da câmera (BrowserStack), abre a Câmera, grava ao menos 16s (o app
-    ...    exige no mínimo 15s) com 2s de folga e confirma o vídeo.
+    [Documentation]    Abre o modal "Adicionar mídia" da seção Vídeos, abre a Câmera,
+    ...    grava ao menos 16s (o app exige no mínimo 15s) e confirma o vídeo.
     Clicar no campo de vídeo
-    Injetar vídeo na câmera
-    BuiltIn.Sleep    3s
     Abrir câmera pelo modal
     BuiltIn.Sleep    3s
-    Tocar botão de gravação
-    ${duracao}=    Evaluate    int(${VISTORIA_VIDEO_MINIMO_SEGUNDOS}) + 2
+    Iniciar gravação
+    ${duracao}=    Evaluate    int(${VISTORIA_VIDEO_MINIMO_SEGUNDOS}) + 6
     BuiltIn.Sleep    ${duracao}s
-    Tocar botão de gravação
+    Parar gravação
     Clicar quando visível        ${VISTORIA_BTN_CONFIRMAR_FOTO}    20s
     Aguardar elemento visível    ${VISTORIA_VIDEO_TILE}
 
@@ -438,3 +435,25 @@ Encerrar sessões E2E
     ...    são executados.
     Run Keyword And Ignore Error    SeleniumLibrary.Close All Browsers
     Run Keyword And Ignore Error    AppiumLibrary.Close Application
+
+Iniciar gravação
+    [Documentation]    Toca o obturador e confirma que a gravação começou.
+    Tocar obturador
+    BuiltIn.Sleep    2s
+    Registrar estado da tela
+
+Parar gravação
+    [Documentation]    Toca o obturador até o botão de confirmar o vídeo aparecer.
+    ...    Tenta pelo elemento, e se não funcionar, por coordenada. Até 4 tentativas.
+    FOR    ${tentativa}    IN RANGE    4
+        ${confirmar}=    Aparece na tela    ${VISTORIA_BTN_CONFIRMAR_FOTO}    2s
+        Exit For Loop If    ${confirmar}
+        IF    ${tentativa} % 2 == 0
+            Run Keyword And Ignore Error    Tocar obturador pelo elemento
+        ELSE
+            Tocar obturador por coordenada
+        END
+        BuiltIn.Sleep    2s
+    END
+    ${confirmar}=    Aparece na tela    ${VISTORIA_BTN_CONFIRMAR_FOTO}    5s
+    Should Be True    ${confirmar}    msg=Não consegui parar a gravação: o botão de confirmar não apareceu.
