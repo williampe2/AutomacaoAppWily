@@ -228,10 +228,53 @@ Confirmar foto
     Aguardar elemento visível    ${foto}
 
 Disparar câmera
-    [Documentation]    Toca o obturador da câmera (foto). O botão não tem resource-id
-    ...    nem content-desc, então é achado pela estrutura do XML (ViewGroup clicável
-    ...    cujo filho não tem elementos dentro).
-    Clicar quando visível    ${VISTORIA_BTN_OBTURADOR}
+    [Documentation]    Toca o obturador da câmera (foto).
+    Tocar obturador
+
+Tocar botão de gravação
+    [Documentation]    Toca o obturador para iniciar ou parar a gravação. É o mesmo
+    ...    botão da foto.
+    Tocar obturador
+
+Tocar obturador
+    [Documentation]    Tenta achar o obturador pela geometria (ViewGroup clicável
+    ...    centralizado na horizontal e no terço inferior da tela). Se não achar,
+    ...    toca por coordenada.
+    ${status}=    Run Keyword And Return Status    Tocar obturador pelo elemento
+    IF    ${status}    RETURN
+    Log    Obturador não encontrado pelo XML; usando toque por coordenada.    WARN
+    Tocar obturador por coordenada
+
+Tocar obturador pelo elemento
+    [Documentation]    Percorre os ViewGroup clicáveis e clica no que fica no centro
+    ...    horizontal (±10% da largura) e abaixo de 80% da altura. Falha se nenhum servir.
+    ${largura}=    AppiumLibrary.Get Window Width
+    ${altura}=     AppiumLibrary.Get Window Height
+    @{candidatos}=    AppiumLibrary.Get Webelements    xpath=//android.view.ViewGroup[@clickable="true"]
+    FOR    ${el}    IN    @{candidatos}
+        ${loc}=    AppiumLibrary.Get Element Location    ${el}
+        ${tam}=    AppiumLibrary.Get Element Size        ${el}
+        ${cx}=    Evaluate    int($loc['x'] + $tam['width'] / 2)
+        ${cy}=    Evaluate    int($loc['y'] + $tam['height'] / 2)
+        ${centrado}=    Evaluate    abs($cx - int($largura) / 2) < int($largura) * 0.1
+        ${embaixo}=     Evaluate    $cy > int($altura) * 0.8
+        IF    ${centrado} and ${embaixo}
+            AppiumLibrary.Click Element    ${el}
+            RETURN
+        END
+    END
+    Fail    Obturador não encontrado entre os elementos clicáveis.
+
+Tocar obturador por coordenada
+    [Documentation]    Fallback: toque nativo no centro do obturador (x=0.5, y=0.94 da
+    ...    altura, medido no XML em retrato 1080x2115).
+    ${largura}=    AppiumLibrary.Get Window Width
+    ${altura}=     AppiumLibrary.Get Window Height
+    ${x}=    Evaluate    int(int($largura) * 0.5)
+    ${y}=    Evaluate    int(int($altura) * 0.94)
+    Log    Tocando obturador em (${x}, ${y}) na tela ${largura}x${altura}.
+    &{args}=    Create Dictionary    x=${x}    y=${y}
+    AppiumLibrary.Execute Script    mobile: clickGesture    &{args}
 
 Adicionar foto
     [Documentation]    Abre o modal "Adicionar mídia" pelo botão da categoria, escolhe
@@ -277,28 +320,6 @@ Adicionar vídeo
     Tocar botão de gravação
     Clicar quando visível        ${VISTORIA_BTN_CONFIRMAR_FOTO}    20s
     Aguardar elemento visível    ${VISTORIA_VIDEO_TILE}
-
-Tocar botão de gravação
-    [Documentation]    Toca o obturador para iniciar ou parar a gravação. É o mesmo
-    ...    botão da foto. Se o locator estrutural falhar, usa a coordenada de fallback.
-    ${achou}=    Aparece na tela    ${VISTORIA_BTN_OBTURADOR}    3s
-    IF    ${achou}
-        Clicar quando visível    ${VISTORIA_BTN_OBTURADOR}
-        RETURN
-    END
-    Log    Obturador não encontrado pelo XML; usando toque por coordenada.    WARN
-    Tocar obturador por coordenada
-
-Tocar obturador por coordenada
-    [Documentation]    Fallback: toque nativo no centro do obturador (x=0.5, y=0.94 da
-    ...    altura, medido no XML em retrato 1080x2115).
-    ${largura}=    AppiumLibrary.Get Window Width
-    ${altura}=     AppiumLibrary.Get Window Height
-    ${x}=    Evaluate    int(int($largura) * 0.5)
-    ${y}=    Evaluate    int(int($altura) * 0.94)
-    Log    Tocando obturador em (${x}, ${y}) na tela ${largura}x${altura}.
-    &{args}=    Create Dictionary    x=${x}    y=${y}
-    AppiumLibrary.Execute Script    mobile: clickGesture    &{args}
 
 Clicar no campo de vídeo
     [Documentation]    Clica no botão add-media logo abaixo do título da seção "Videos".
