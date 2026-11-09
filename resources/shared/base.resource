@@ -76,7 +76,7 @@ Montar capabilities BrowserStack
     &{caps}=    Create Dictionary
     ...    platformName=Android
     ...    automationName=UiAutomator2
-    ...    deviceName=%{BS_DEVICE=Samsung Galaxy S23}
+    ...    deviceName=%{BS_DEVICE=Google Pixel 7}
     ...    platformVersion=%{BS_OS_VERSION=13.0}
     ...    app=%{BS_APP_URL}
     ...    noReset=${no_reset}
