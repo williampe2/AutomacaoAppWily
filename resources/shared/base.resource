@@ -131,7 +131,7 @@ Abrir navegador operador no BrowserStack
     ...    remote_url=https://hub-cloud.browserstack.com/wd/hub
     ...    desired_capabilities=${caps}
     SeleniumLibrary.Maximize Browser Window
-    
+
 # ---------- Banco de dados ----------
 Conectar ao Banco de Dados
     [Documentation]    Conecta ao PostgreSQL (DatabaseLibrary 2.x).
@@ -191,3 +191,4 @@ Conceder permissões de localização e câmera
         ...    msg=Android não concedeu ${permissao} ao app ${app}[app_package].
     END
     Log To Console    Permissões de localização e câmera concedidas.
+    
