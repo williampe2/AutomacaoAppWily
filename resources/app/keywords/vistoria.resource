@@ -220,10 +220,19 @@ Rolar tela de mídias
     Deslizar para cima    0.75    0.35    600ms
 
 Confirmar foto
-    [Documentation]    Dispara a câmera (botão central) e confirma a foto capturada.
+    [Documentation]    Dispara a câmera e confirma a foto. Se o app mostrar o erro
+    ...    "Erro ao tirar foto", toca em "Tentar novamente" e dispara de novo (até 3 vezes).
     [Arguments]    ${foto}
     Aguardar elemento visível    ${VISTORIA_TEXTO_ZOOM_CAMERA}
-    Disparar câmera
+    BuiltIn.Sleep    2s
+    FOR    ${tentativa}    IN RANGE    3
+        Disparar câmera
+        ${erro}=    Aparece na tela    id=error-modal-try-again    3s
+        IF    not ${erro}    BREAK
+        Log    Erro ao tirar foto (tentativa ${tentativa + 1}); tocando em Tentar novamente.    WARN
+        AppiumLibrary.Click Element    id=error-modal-try-again
+        BuiltIn.Sleep    2s
+    END
     Clicar quando visível        ${VISTORIA_BTN_CONFIRMAR_FOTO}
     Aguardar elemento visível    ${foto}
 
