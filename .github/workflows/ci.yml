@@ -6,6 +6,15 @@ on:
   pull_request:
     branches: [ main, master, integration ]
   workflow_dispatch:
+    inputs:
+      bs_device:
+        description: "Dispositivo do BrowserStack (ex.: Samsung Galaxy S23, Google Pixel 8)"
+        required: false
+        default: "Samsung Galaxy S23"
+      bs_os_version:
+        description: "Versão do Android (ex.: 13.0, 14.0)"
+        required: false
+        default: "13.0"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -200,6 +209,10 @@ jobs:
           BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
           BS_APP_URL: ${{ secrets.BS_APP_URL }}
           BS_GPS_LOCATION: "-7.0769,-41.4672"
+          # Dispositivo do app. No push/PR usa o padrão abaixo; no "Run workflow"
+          # manual dá para escolher outro nos campos de entrada.
+          BS_DEVICE: ${{ inputs.bs_device || 'Samsung Galaxy S23' }}
+          BS_OS_VERSION: ${{ inputs.bs_os_version || '13.0' }}
         run: |
           set -euo pipefail
           : "${BROWSERSTACK_USERNAME:?Configure o secret BROWSERSTACK_USERNAME}"
@@ -207,9 +220,11 @@ jobs:
           : "${BS_APP_URL:?Configure o secret BS_APP_URL}"
           : "${ROBOT_SUITE:?Caminho dos testes vazio}"
           export BROWSERSTACK_USERNAME BROWSERSTACK_ACCESS_KEY BS_APP_URL
+          export BS_DEVICE BS_OS_VERSION
           export EXECUCAO=browserstack
           export BS_LOCAL=true
           export BROWSERSTACK_LOCAL_IDENTIFIER="$BS_LOCAL_IDENTIFIER"
+          echo "Dispositivo: $BS_DEVICE / Android $BS_OS_VERSION"
           python -m robot -d results "$ROBOT_SUITE"
 
       - name: Parar túnel BrowserStack Local
