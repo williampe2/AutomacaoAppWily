@@ -67,6 +67,7 @@ Montar capabilities BrowserStack
     ...    gpsLocation=%{BS_GPS_LOCATION=-7.0769,-41.4672}
     ...    networkLogs=${False}
     ...    deviceOrientation=${orientacao_bs}
+    ...    enableCameraVideoInjection=${True}
     ${local_id}=    Get Environment Variable    BROWSERSTACK_LOCAL_IDENTIFIER    default=${EMPTY}
     IF    '${local_id}' != ''
         Set To Dictionary    ${opts}    localIdentifier=${local_id}
@@ -79,7 +80,6 @@ Montar capabilities BrowserStack
     ...    app=%{BS_APP_URL}
     ...    noReset=${no_reset}
     ...    appium:autoGrantPermissions=${True}
-    ...    browserstack:enableCameraVideoInjection=${True}
     ...    bstack:options=${opts}
     RETURN    https://hub.browserstack.com/wd/hub    ${caps}
 
