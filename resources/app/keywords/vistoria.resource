@@ -273,32 +273,40 @@ Injetar vídeo na câmera
 
 Adicionar vídeo
     [Documentation]    Abre o modal "Adicionar mídia" da seção Vídeos, injeta o vídeo no
-    ...    feed da câmera (BrowserStack), abre a Câmera, gira o dispositivo para paisagem,
-    ...    grava ao menos 16s
+    ...    feed da câmera (BrowserStack), aguarda o feed iniciar, abre a Câmera e grava
+    ...    ao menos 16s
     ...    (o app exige no mínimo 15s) e confirma o vídeo.
     Clicar no campo de vídeo
     Injetar vídeo na câmera
+    BuiltIn.Sleep    3s
     Abrir câmera pelo modal
-    Colocar dispositivo em paisagem
-    Disparar câmera
+    BuiltIn.Sleep    2s
+    Tocar botão de gravação
     BuiltIn.Sleep    ${VISTORIA_VIDEO_MINIMO_SEGUNDOS}s
-    Disparar câmera
+    Tocar botão de gravação
     Clicar quando visível        ${VISTORIA_BTN_CONFIRMAR_FOTO}
     Aguardar elemento visível    ${VISTORIA_VIDEO_TILE}
 
-Colocar dispositivo em paisagem
-    [Documentation]    Gira o dispositivo antes de abrir a câmera de vídeo e confirma a rotação.
-    ${biblioteca}=    BuiltIn.Get Library Instance    AppiumLibrary
-    ${driver}=    Evaluate    $biblioteca._current_application()
-    Evaluate    setattr($driver, 'orientation', 'LANDSCAPE')
-    BuiltIn.Wait Until Keyword Succeeds    10s    1s    Verificar orientação paisagem
-
-Verificar orientação paisagem
+Tocar botão de gravação
+    [Documentation]    Usa o botão acessível de gravar; se não estiver exposto no XML,
+    ...    toca o obturador pela posição relativa observada na tela da câmera.
+    ${botao_visivel}=    Aparece na tela    ${VISTORIA_BTN_GRAVAR_VIDEO}    2s
+    IF    ${botao_visivel}
+        Clicar quando visível    ${VISTORIA_BTN_GRAVAR_VIDEO}
+        RETURN
+    END
+    Log    Botão de gravação sem locator acessível; usando toque pela posição da tela.    WARN
     ${largura}=    AppiumLibrary.Get Window Width
     ${altura}=     AppiumLibrary.Get Window Height
-    ${paisagem}=   Evaluate    int($largura) > int($altura)
-    Should Be True    ${paisagem}
-    ...    msg=O dispositivo não girou para paisagem antes da gravação de vídeo (${largura}x${altura}).
+    IF    $altura > $largura
+        ${x}=    Evaluate    int(int($largura) * 0.5)
+        ${y}=    Evaluate    int(int($altura) * 0.8)
+    ELSE
+        ${x}=    Evaluate    int(int($largura) * 0.9)
+        ${y}=    Evaluate    int(int($altura) * 0.5)
+    END
+    @{coordenadas}=    Create List    ${x}    ${y}
+    AppiumLibrary.Tap    ${coordenadas}
 
 Clicar no campo de vídeo
     [Documentation]    Clica no botão add-media logo abaixo do título da seção "Videos".
