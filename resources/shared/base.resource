@@ -1,8 +1,9 @@
 *** Settings ***
 Documentation    Arquivo responsável por iniciar e encerrar as sessões do Appium (Mobile) e do Browser (Web).
-...              O destino do app é escolhido pela variável de ambiente EXECUCAO:
-...              local (padrão, dispositivo físico) ou browserstack.
+...              O destino do app e do navegador é escolhido pela variável de ambiente EXECUCAO:
+...              local (padrão, dispositivo físico + Chrome local) ou browserstack (App Automate + Automate).
 Library          AppiumLibrary      run_on_failure=AppiumLibrary.Capture Page Screenshot
+Library          SeleniumLibrary    run_on_failure=SeleniumLibrary.Capture Page Screenshot
 Library          DatabaseLibrary
 Library          OperatingSystem
 Library          Collections
@@ -19,7 +20,7 @@ Abrir Aplicativo Wily no Emulador
     [Documentation]    Abre o app no destino definido por EXECUCAO e garante que está na tela inicial.
     Abrir aplicativo
     ${botao_visivel}    Run Keyword And Return Status
-    ...    Wait Until Element Is Visible    ${CADASTRO_BTN_CRIAR_CONTA}    3s
+    ...    AppiumLibrary.Wait Until Element Is Visible    ${CADASTRO_BTN_CRIAR_CONTA}    3s
     IF    not ${botao_visivel}
         Clicar em Acessar Conta
     END
@@ -36,7 +37,7 @@ Abrir aplicativo
         ${url}    ${caps}=    Montar capabilities local    ${no_reset}
     END
     Log To Console    \n>>> Destino: ${url}
-    Open Application    ${url}    &{caps}
+    AppiumLibrary.Open Application    ${url}    &{caps}
     Aceitar permissão de notificações na inicialização
     Conceder permissões de localização e câmera
 
@@ -86,19 +87,51 @@ Montar capabilities BrowserStack
 
 Fechar Aplicativo Wily
     [Documentation]    Encerra a sessão do Appium
-    Close Application
+    AppiumLibrary.Close Application
 
 Fechar sessao do app
-    Close Application
+    AppiumLibrary.Close Application
 
 # ---------- Web ----------
 Abrir navegador operador
-    Open Browser    ${WEB_BASE_URL}    ${BROWSER}
-    Maximize Browser Window
+    [Documentation]    Abre o navegador do operador no destino definido por EXECUCAO
+    ...    (local | browserstack). A URL inicial é opcional (padrão about:blank).
+    [Arguments]    ${url_inicial}=about:blank
+    IF    '%{EXECUCAO=local}' == 'browserstack'
+        Abrir navegador operador no BrowserStack    ${url_inicial}
+    ELSE
+        SeleniumLibrary.Open Browser    ${url_inicial}    ${web}[browser]
+        SeleniumLibrary.Maximize Browser Window
+    END
 
-Fechar sessao web
-    Close Browser
-
+Abrir navegador operador no BrowserStack
+    [Documentation]    Abre o Chrome numa máquina Windows do BrowserStack Automate.
+    ...    Usa o mesmo build e o mesmo túnel Local (localIdentifier) da sessão do app,
+    ...    então o site de QA interno continua acessível.
+    [Arguments]    ${url_inicial}=about:blank
+    ${local}=    Evaluate    '%{BS_LOCAL=true}'.lower() == 'true'
+    &{opts}=    Create Dictionary
+    ...    os=Windows
+    ...    osVersion=11
+    ...    projectName=Automacao Wily
+    ...    buildName=%{BS_BUILD_NAME=local}
+    ...    sessionName=%{BS_SESSION_NAME=login}-web
+    ...    local=${local}
+    ...    userName=%{BROWSERSTACK_USERNAME}
+    ...    accessKey=%{BROWSERSTACK_ACCESS_KEY}
+    ${local_id}=    Get Environment Variable    BROWSERSTACK_LOCAL_IDENTIFIER    default=${EMPTY}
+    IF    '${local_id}' != ''
+        Set To Dictionary    ${opts}    localIdentifier=${local_id}
+    END
+    &{caps}=    Create Dictionary
+    ...    browserName=Chrome
+    ...    browserVersion=latest
+    ...    bstack:options=${opts}
+    SeleniumLibrary.Open Browser    ${url_inicial}
+    ...    remote_url=https://hub-cloud.browserstack.com/wd/hub
+    ...    desired_capabilities=${caps}
+    SeleniumLibrary.Maximize Browser Window
+    
 # ---------- Banco de dados ----------
 Conectar ao Banco de Dados
     [Documentation]    Conecta ao PostgreSQL (DatabaseLibrary 2.x).
