@@ -282,8 +282,10 @@ Adicionar vídeo
     Abrir câmera pelo modal
     BuiltIn.Sleep    2s
     Tocar botão de gravação
+    Registrar estado da tela
     BuiltIn.Sleep    ${VISTORIA_VIDEO_MINIMO_SEGUNDOS}s
     Tocar botão de gravação
+    Registrar estado da tela
     Clicar quando visível        ${VISTORIA_BTN_CONFIRMAR_FOTO}
     Aguardar elemento visível    ${VISTORIA_VIDEO_TILE}
 
