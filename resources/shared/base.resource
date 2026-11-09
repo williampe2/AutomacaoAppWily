@@ -68,6 +68,7 @@ Montar capabilities BrowserStack
     ...    networkLogs=${False}
     ...    deviceOrientation=${orientacao_bs}
     ...    enableCameraVideoInjection=${True}
+    ...    enableCameraPreview=${True}
     ${local_id}=    Get Environment Variable    BROWSERSTACK_LOCAL_IDENTIFIER    default=${EMPTY}
     IF    '${local_id}' != ''
         Set To Dictionary    ${opts}    localIdentifier=${local_id}
