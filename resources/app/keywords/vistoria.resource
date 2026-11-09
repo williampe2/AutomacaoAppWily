@@ -184,6 +184,8 @@ Enviar fotos
     Aguardar elemento visível    ${VISTORIA_TITULO_ENVIAR_VISTORIA}
 
 Completar mídias e concluir
+    [Documentation]    Captura em sequência nos slots de referência, aproximada,
+    ...    centralizada e aberta, depois adiciona o vídeo.
     Injetar vídeo na câmera
     Adicionar foto    ${VISTORIA_ADD_REFERENCIA}      ${VISTORIA_FOTO_REFERENCIA}
     Adicionar foto    ${VISTORIA_ADD_APROXIMADA}      ${VISTORIA_FOTO_APROXIMADA}
@@ -320,8 +322,6 @@ Adicionar vídeo
     ...    feed da câmera (BrowserStack), abre a Câmera, grava ao menos 16s (o app
     ...    exige no mínimo 15s) com 2s de folga e confirma o vídeo.
     Clicar no campo de vídeo
-    Injetar vídeo na câmera
-    BuiltIn.Sleep    3s
     Abrir câmera pelo modal
     BuiltIn.Sleep    3s
     Tocar botão de gravação
