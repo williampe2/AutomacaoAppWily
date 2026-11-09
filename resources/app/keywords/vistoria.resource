@@ -184,8 +184,7 @@ Enviar fotos
     Aguardar elemento visível    ${VISTORIA_TITULO_ENVIAR_VISTORIA}
 
 Completar mídias e concluir
-    [Documentation]    Captura em sequência nos slots de referência, aproximada,
-    ...    centralizada e aberta, depois adiciona o vídeo.
+    Injetar vídeo na câmera
     Adicionar foto    ${VISTORIA_ADD_REFERENCIA}      ${VISTORIA_FOTO_REFERENCIA}
     Adicionar foto    ${VISTORIA_ADD_APROXIMADA}      ${VISTORIA_FOTO_APROXIMADA}
     Adicionar foto    ${VISTORIA_ADD_CENTRALIZADA}    ${VISTORIA_FOTO_CENTRALIZADA}
