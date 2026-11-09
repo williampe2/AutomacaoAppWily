@@ -297,10 +297,24 @@ Adicionar foto
 
 Abrir câmera pelo modal
     [Documentation]    No modal "Adicionar mídia", toca em "Câmera" e aguarda a câmera abrir.
-    ...    Injeta o feed antes de abrir a câmera (só no BrowserStack).
-    Injetar vídeo na câmera
+    ...    Se aparecer "Erro na câmera", volta e abre de novo (até 3 tentativas).
     Clicar quando visível        ${VISTORIA_BTN_CAMERA}
     Conceder acesso à câmera se solicitado
+    FOR    ${tentativa}    IN RANGE    3
+        ${ok}=    Aparece na tela    ${VISTORIA_TEXTO_ZOOM_CAMERA}    5s
+        Exit For Loop If    ${ok}
+        ${erro}=    Aparece na tela    xpath=//android.view.ViewGroup[contains(@content-desc,"Erro na câmera")]    1s
+        IF    ${erro}
+            Log    Erro na câmera (tentativa ${tentativa + 1}); voltando e reabrindo.    WARN
+            AppiumLibrary.Press Keycode    4
+            BuiltIn.Sleep    3s
+            ${modal}=    Aparece na tela    ${VISTORIA_BTN_CAMERA}    3s
+            IF    ${modal}
+                AppiumLibrary.Click Element    ${VISTORIA_BTN_CAMERA}
+                Conceder acesso à câmera se solicitado
+            END
+        END
+    END
     Aguardar elemento visível    ${VISTORIA_TEXTO_ZOOM_CAMERA}
 
 Injetar vídeo na câmera
