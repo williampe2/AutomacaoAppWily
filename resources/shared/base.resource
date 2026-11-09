@@ -106,8 +106,7 @@ Abrir navegador operador
 
 Abrir navegador operador no BrowserStack
     [Documentation]    Abre o Chrome numa máquina Windows do BrowserStack Automate.
-    ...    Usa o mesmo build e o mesmo túnel Local (localIdentifier) da sessão do app,
-    ...    então o site de QA interno continua acessível.
+    ...    Usa o mesmo build e o mesmo túnel Local (localIdentifier) da sessão do app.
     [Arguments]    ${url_inicial}=about:blank
     ${local}=    Evaluate    '%{BS_LOCAL=true}'.lower() == 'true'
     &{opts}=    Create Dictionary
@@ -123,13 +122,12 @@ Abrir navegador operador no BrowserStack
     IF    '${local_id}' != ''
         Set To Dictionary    ${opts}    localIdentifier=${local_id}
     END
-    &{caps}=    Create Dictionary
-    ...    browserName=Chrome
-    ...    browserVersion=latest
-    ...    bstack:options=${opts}
-    SeleniumLibrary.Open Browser    ${url_inicial}
+    ${chrome_options}=    Evaluate    sys.modules['selenium.webdriver'].ChromeOptions()    sys, selenium.webdriver
+    Call Method    ${chrome_options}    set_capability    browserVersion    latest
+    Call Method    ${chrome_options}    set_capability    bstack:options    ${opts}
+    SeleniumLibrary.Open Browser    ${url_inicial}    chrome
     ...    remote_url=https://hub-cloud.browserstack.com/wd/hub
-    ...    desired_capabilities=${caps}
+    ...    options=${chrome_options}
     SeleniumLibrary.Maximize Browser Window
 
 # ---------- Banco de dados ----------
@@ -191,4 +189,5 @@ Conceder permissões de localização e câmera
         ...    msg=Android não concedeu ${permissao} ao app ${app}[app_package].
     END
     Log To Console    Permissões de localização e câmera concedidas.
+    
     
