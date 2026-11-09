@@ -300,11 +300,12 @@ Tocar botão de gravação
     ${altura}=     AppiumLibrary.Get Window Height
     IF    $altura > $largura
         ${x}=    Evaluate    int(int($largura) * 0.5)
-        ${y}=    Evaluate    int(int($altura) * 0.8)
+        ${y}=    Evaluate    int(int($altura) * 0.83)
     ELSE
         ${x}=    Evaluate    int(int($largura) * 0.9)
         ${y}=    Evaluate    int(int($altura) * 0.5)
     END
+    Log    Tocando gravação em (${x}, ${y}) na tela ${largura}x${altura}.
     @{coordenadas}=    Create List    ${x}    ${y}
     AppiumLibrary.Tap    ${coordenadas}
 
