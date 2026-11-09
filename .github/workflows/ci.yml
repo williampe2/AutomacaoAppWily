@@ -160,7 +160,7 @@ jobs:
         env:
           BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
           BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
-          VIDEO_PATH: media/video_injection_bs.mp4
+          VIDEO_PATH: media/video_injection_bs1.mp4
         run: |
           set -euo pipefail
           : "${BROWSERSTACK_USERNAME:?Configure o secret BROWSERSTACK_USERNAME}"
@@ -277,4 +277,3 @@ jobs:
         with:
           name: robot-results
           path: results/
-          
