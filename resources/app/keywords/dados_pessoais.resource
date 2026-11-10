@@ -29,7 +29,7 @@ Garantir usuário logado
         ${na_home}=    Elemento está visível    ${MENU_BTN_ABRIR}    10s
         IF    ${na_home}    RETURN
     END
-    Realizar login
+    Realizar login    ${usuarios}[wily_DA][email]    ${usuarios}[wily_DA][senha]
 
 Garantir nome salvo
     [Documentation]    Estando na lista de dados pessoais, salva o nome informado caso o atual seja diferente.
