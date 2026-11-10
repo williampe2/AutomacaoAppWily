@@ -9,8 +9,6 @@ Test Setup        Garantir lista de dados pessoais
 Test Teardown     Descartar alteração do nome
 
 *** Test Cases ***
-
-
 Nome De Uma Palavra Deve Ser Rejeitado
     [Documentation]    Confirma que um nome com uma única palavra não habilita a atualização.
     [Tags]    mobile    dados_pessoais
@@ -29,7 +27,7 @@ Nome Vazio Não Deve Permitir Atualização
     [Documentation]    Confirma que um nome vazio não habilita a atualização.
     [Tags]    mobile    dados_pessoais
     Given Abrir edição do nome
-    When Clear Text    ${DADOS_PESSOAIS_NOME_INPUT}
+    When AppiumLibrary.Clear Text    ${DADOS_PESSOAIS_NOME_INPUT}
     Then Validar atualização desabilitada
 
 Nome Repetido Não Deve Permitir Atualização
@@ -49,8 +47,8 @@ Nome Válido Deve Ser Atualizado
     Given Abrir edição do nome
     When Substituir nome digitado    ${nome_novo}
     Then Validar atualização habilitada
-    When Click Element    ${DADOS_PESSOAIS_NOME_BTN_ATUALIZAR}
-    And Wait Until Element Is Visible    ${DADOS_PESSOAIS_ITEM_NOME}    ${DEFAULT_TIMEOUT}s
+    When AppiumLibrary.Click Element    ${DADOS_PESSOAIS_NOME_BTN_ATUALIZAR}
+    And AppiumLibrary.Wait Until Element Is Visible    ${DADOS_PESSOAIS_ITEM_NOME}    ${DEFAULT_TIMEOUT}s
     And Abrir edição do nome
     ${nome_atualizado}=    Ler nome digitado
     Then Should Be Equal As Strings    ${nome_atualizado}    ${nome_novo}
@@ -74,4 +72,4 @@ Lista De Dados Pessoais Deve Retornar Para A Home
     [Tags]    mobile    dados_pessoais
     [Teardown]    No Operation
     When Voltar para a home
-    Then Wait Until Element Is Visible    ${MENU_BTN_ABRIR}    ${DEFAULT_TIMEOUT}s
+    Then AppiumLibrary.Wait Until Element Is Visible    ${MENU_BTN_ABRIR}    ${DEFAULT_TIMEOUT}s
