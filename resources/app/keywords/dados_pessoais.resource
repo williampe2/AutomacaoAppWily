@@ -19,17 +19,20 @@ Preparar dados pessoais
     Garantir nome salvo    ${NOME_DO_PERFIL}
 
 Garantir usuário logado
-    [Documentation]    Só faz login se o app não estiver já na Home. Trata também a
-    ...    tela de boas-vindas ("Acessar conta"), que aparece com a sessão preservada.
+    [Documentation]    Só faz login se o app não estiver já na Home. Usa a mesma sequência
+    ...    do fluxo de vistoria (Preparar sessão de vistoria), que já funciona.
     ${na_home}=    Elemento está visível    ${MENU_BTN_ABRIR}    5s
     IF    ${na_home}    RETURN
-    ${boas_vindas}=    Elemento está visível    ${LOGIN_BTN_ACESSAR_CONTA}    5s
+    ${boas_vindas}=    Elemento está visível    ${LOGIN_BTN_ACESSAR_CONTA}    10s
     IF    ${boas_vindas}
         AppiumLibrary.Click Element    ${LOGIN_BTN_ACESSAR_CONTA}
-        ${na_home}=    Elemento está visível    ${MENU_BTN_ABRIR}    10s
-        IF    ${na_home}    RETURN
+        Preencher campos de Email    ${usuarios}[wily_DA][usuario_app]
+        Preencher campos de senha    ${usuarios}[wily_DA][senha_app]
+        Clicar em Entrar
+        Verificar se o login foi realizado com sucesso
     END
-    Realizar login    ${usuarios}[wily_DA][email]    ${usuarios}[wily_DA][senha]
+    ${na_home}=    Elemento está visível    ${MENU_BTN_ABRIR}    ${DEFAULT_TIMEOUT}s
+    Should Be True    ${na_home}    msg=Não chegou à Home após o login.
 
 Garantir nome salvo
     [Documentation]    Estando na lista de dados pessoais, salva o nome informado caso o atual seja diferente.
