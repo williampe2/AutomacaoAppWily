@@ -276,13 +276,12 @@ Tocar obturador pelo elemento
     Fail    Obturador não encontrado entre os elementos clicáveis.
 
 Tocar obturador por coordenada
-    [Documentation]    Fallback: toque nativo no centro do obturador (x=0.5, y=0.94 da
-    ...    altura, medido no XML em retrato 1080x2115).
+    [Documentation]    Fallback: usa a altura do app no XML (sem barras do sistema).
+    ${fonte}=      AppiumLibrary.Get Source
     ${largura}=    AppiumLibrary.Get Window Width
-    ${altura}=     AppiumLibrary.Get Window Height
+    ${altura}=     camera_utils.Altura App    ${fonte}
     ${x}=    Evaluate    int(int($largura) * 0.5)
-    ${y}=    Evaluate    int(int($altura) * 0.94)
-    Log    Tocando obturador em (${x}, ${y}) na tela ${largura}x${altura}.
+    ${y}=    Evaluate    int(int($altura) * 0.90)
     &{args}=    Create Dictionary    x=${x}    y=${y}
     AppiumLibrary.Execute Script    mobile: clickGesture    &{args}
 
