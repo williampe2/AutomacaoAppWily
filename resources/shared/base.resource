@@ -190,4 +190,5 @@ Conceder permissões de localização e câmera
     END
     Log To Console    Permissões de localização e câmera concedidas.
     
+
     
