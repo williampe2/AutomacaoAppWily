@@ -38,8 +38,6 @@ ${ICONE_NUVEM_CINZA}                 ${{chr(0xE2C3)}}
 ${VISTORIA_XPATH_VIDEO_NUVEM_VERDE}  //*[@resource-id="media-Videos-0" and contains(@content-desc, "${ICONE_NUVEM_VERDE}")]
 ${VISTORIA_VIDEO_TILE}               xpath=//*[@resource-id="media-Videos-0"]
 ${VISTORIA_TITULO_VIDEO}             xpath=//*[@text="Videos"]
-${VISTORIA_ADD_FOTOS_IDEAIS}         android=new UiSelector().resourceId("add-media").instance(0)
-${VISTORIA_ADD_FOTOS_GUIADAS}        android=new UiSelector().resourceId("add-media").instance(0)
 ${VISTORIA_FOTO_IDEAL}               xpath=//*[@resource-id="media-free-photo-0"]
 ${VISTORIA_FOTO_GUIADA}              xpath=//*[@resource-id="media-Fotos guiadas-0"]
 ${VISTORIA_TXT_UPLOAD_EM_PROGRESSO}  xpath=//*[@text="Upload em progresso" or @content-desc="Upload em progresso"]
@@ -52,10 +50,19 @@ ${VISTORIA_TXT_VISTORIA_APROVADA}    xpath=//*[@text="Tudo certo com sua vistori
 ${VISTORIA_BTN_BUSCAR_VISTORIA}      xpath=//*[@resource-id="search-button" or @content-desc="Buscar vistoria"]
 ${VISTORIA_HOME_BTN_INICIAR}         xpath=//*[@resource-id="start-button"]
 ${VISTORIA_BTN_PROSSEGUIR_APROVACAO}    xpath=//*[@clickable="true" and (contains(@text,"Continuar") or contains(@content-desc,"Continuar") or contains(@text,"Prosseguir") or contains(@content-desc,"Prosseguir") or contains(@text,"Voltar para início") or contains(@content-desc,"Voltar para início") or contains(@text,"Ir para o início") or contains(@content-desc,"Ir para o início") or contains(@text,"Entendi") or contains(@content-desc,"Entendi"))]
-${VISTORIA_ADD_REFERENCIA}     xpath=//*[starts-with(@text,"Foto de refer")]/following-sibling::*[.//*[@resource-id="add-media"]][1]//*[@resource-id="add-media"]
-${VISTORIA_ADD_APROXIMADA}     xpath=//*[@text="Foto aproximada"]/following-sibling::*[.//*[@resource-id="add-media"]][1]//*[@resource-id="add-media"]
-${VISTORIA_ADD_CENTRALIZADA}   xpath=//*[@text="Foto centralizada"]/following-sibling::*[.//*[@resource-id="add-media"]][1]//*[@resource-id="add-media"]
-${VISTORIA_ADD_ABERTA}         xpath=//*[@text="Foto aberta"]/following-sibling::*[.//*[@resource-id="add-media"]][1]//*[@resource-id="add-media"]
+
+# Botões "add-media" ancorados no título de cada seção (não usar instance(N):
+# o app recicla as seções fora da tela e o índice muda)
+${VISTORIA_ADD_REFERENCIA}           xpath=//*[starts-with(@text,"Foto de refer")]/following-sibling::*[.//*[@resource-id="add-media"]][1]//*[@resource-id="add-media"]
+${VISTORIA_ADD_APROXIMADA}           xpath=//*[@text="Foto aproximada"]/following-sibling::*[.//*[@resource-id="add-media"]][1]//*[@resource-id="add-media"]
+${VISTORIA_ADD_CENTRALIZADA}         xpath=//*[@text="Foto centralizada"]/following-sibling::*[.//*[@resource-id="add-media"]][1]//*[@resource-id="add-media"]
+${VISTORIA_ADD_ABERTA}               xpath=//*[@text="Foto aberta"]/following-sibling::*[.//*[@resource-id="add-media"]][1]//*[@resource-id="add-media"]
+
+# Tiles das fotos já enviadas
+${VISTORIA_FOTO_REFERENCIA}          xpath=//*[@resource-id="media-Foto de referencia-0"]
+${VISTORIA_FOTO_APROXIMADA}          xpath=//*[@resource-id="media-Foto aproximada-0"]
+${VISTORIA_FOTO_CENTRALIZADA}        xpath=//*[@resource-id="media-Foto centralizada-0"]
+${VISTORIA_FOTO_ABERTA}              xpath=//*[@resource-id="media-Foto aberta-0"]
 
 # Cancelamento
 ${VISTORIA_BTN_VOLTAR_ETAPA}         xpath=//android.view.ViewGroup[@content-desc="${ICONE_SETA_VOLTAR}"]
