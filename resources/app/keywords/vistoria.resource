@@ -488,3 +488,4 @@ Parar gravação com toque firme
         ${gravando}=    Aparece na tela    xpath=//android.widget.TextView[contains(@text,"00:00:")]    1s
         Exit For Loop If    not ${gravando}
     END
+    
