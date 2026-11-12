@@ -28,4 +28,3 @@ Vistoria Deve Ser Concluída E Aprovada No WEB
     # Etapas do sistema WEB (Selenium)
     Aprovar transação no WEB
     Ficar offline
-    

@@ -52,14 +52,10 @@ ${VISTORIA_TXT_VISTORIA_APROVADA}    xpath=//*[@text="Tudo certo com sua vistori
 ${VISTORIA_BTN_BUSCAR_VISTORIA}      xpath=//*[@resource-id="search-button" or @content-desc="Buscar vistoria"]
 ${VISTORIA_HOME_BTN_INICIAR}         xpath=//*[@resource-id="start-button"]
 ${VISTORIA_BTN_PROSSEGUIR_APROVACAO}    xpath=//*[@clickable="true" and (contains(@text,"Continuar") or contains(@content-desc,"Continuar") or contains(@text,"Prosseguir") or contains(@content-desc,"Prosseguir") or contains(@text,"Voltar para início") or contains(@content-desc,"Voltar para início") or contains(@text,"Ir para o início") or contains(@content-desc,"Ir para o início") or contains(@text,"Entendi") or contains(@content-desc,"Entendi"))]
-${VISTORIA_ADD_REFERENCIA}     xpath=//android.widget.TextView[@text="Foto de referência"]/following-sibling::android.view.ViewGroup[1]//*[@resource-id="add-media"]
-${VISTORIA_ADD_APROXIMADA}     xpath=//android.widget.TextView[@text="Foto aproximada"]/following-sibling::android.view.ViewGroup[1]//*[@resource-id="add-media"]
-${VISTORIA_ADD_CENTRALIZADA}   xpath=//android.widget.TextView[@text="Foto centralizada"]/following-sibling::android.view.ViewGroup[1]//*[@resource-id="add-media"]
-${VISTORIA_ADD_ABERTA}         xpath=//android.widget.TextView[@text="Foto aberta"]/following-sibling::android.view.ViewGroup[1]//*[@resource-id="add-media"]
-${VISTORIA_FOTO_REFERENCIA}          xpath=//*[@resource-id="media-Foto de referencia-0"]
-${VISTORIA_FOTO_APROXIMADA}          xpath=//*[@resource-id="media-Foto aproximada-0"]
-${VISTORIA_FOTO_CENTRALIZADA}        xpath=//*[@resource-id="media-Foto centralizada-0"]
-${VISTORIA_FOTO_ABERTA}              xpath=//*[@resource-id="media-Foto aberta-0"]
+${VISTORIA_ADD_REFERENCIA}     xpath=//*[starts-with(@text,"Foto de refer")]/following-sibling::*[.//*[@resource-id="add-media"]][1]//*[@resource-id="add-media"]
+${VISTORIA_ADD_APROXIMADA}     xpath=//*[@text="Foto aproximada"]/following-sibling::*[.//*[@resource-id="add-media"]][1]//*[@resource-id="add-media"]
+${VISTORIA_ADD_CENTRALIZADA}   xpath=//*[@text="Foto centralizada"]/following-sibling::*[.//*[@resource-id="add-media"]][1]//*[@resource-id="add-media"]
+${VISTORIA_ADD_ABERTA}         xpath=//*[@text="Foto aberta"]/following-sibling::*[.//*[@resource-id="add-media"]][1]//*[@resource-id="add-media"]
 
 # Cancelamento
 ${VISTORIA_BTN_VOLTAR_ETAPA}         xpath=//android.view.ViewGroup[@content-desc="${ICONE_SETA_VOLTAR}"]
