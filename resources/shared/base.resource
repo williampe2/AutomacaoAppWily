@@ -69,6 +69,7 @@ Montar capabilities BrowserStack
     ...    networkLogs=${False}
     ...    deviceOrientation=${orientacao_bs}
     ...    enableCameraVideoInjection=${True}
+    ...    enableCameraImageInjection=${True}
     ...    enableCameraPreview=${True}
     ${local_id}=    Get Environment Variable    BROWSERSTACK_LOCAL_IDENTIFIER    default=${EMPTY}
     IF    '${local_id}' != ''
@@ -84,7 +85,7 @@ Montar capabilities BrowserStack
     ...    appium:autoGrantPermissions=${True}
     ...    bstack:options=${opts}
     RETURN    https://hub.browserstack.com/wd/hub    ${caps}
-
+    
 Fechar Aplicativo Wily
     [Documentation]    Encerra a sessão do Appium
     AppiumLibrary.Close Application
