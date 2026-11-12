@@ -30,7 +30,7 @@ jobs:
       BS_BUILD_NAME: ${{ github.workflow }}-${{ github.run_id }}-${{ github.run_attempt }}
       BS_SESSION_NAME: login-${{ github.run_id }}-${{ github.run_attempt }}
       # Pasta/arquivo de testes passado ao Robot (ajuste se quiser rodar só uma suíte)
-      ROBOT_SUITE: tests/mobile/Menu/dados_pessoais.robot
+      ROBOT_SUITE: tests/e2e/Tests/vistoria_e2e.robot
 
     steps:
       - name: Checkout do código
@@ -293,4 +293,3 @@ jobs:
         with:
           name: robot-results
           path: results/
-          
