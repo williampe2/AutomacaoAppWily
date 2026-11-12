@@ -2,9 +2,9 @@ name: CI Automacao
 
 on:
   push:
-    branches: [ main, master, integration ]
+    branches: [ main, master, integration, testeVersaoAntiga ]
   pull_request:
-    branches: [ main, master, integration ]
+    branches: [ main, master, integration, testeVersaoAntiga ]
   workflow_dispatch:
     inputs:
       bs_device:
@@ -293,3 +293,4 @@ jobs:
         with:
           name: robot-results
           path: results/
+          
