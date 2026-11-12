@@ -276,14 +276,12 @@ Tocar obturador pelo elemento
     Fail    Obturador não encontrado entre os elementos clicáveis.
 
 Tocar obturador por coordenada
-    [Documentation]    Fallback: usa a altura do app no XML (sem barras do sistema).
-    ${fonte}=      AppiumLibrary.Get Source
+    [Documentation]    Fallback: toca no centro do obturador (50% da largura, 96% da altura do app).
     ${largura}=    AppiumLibrary.Get Window Width
-    ${altura}=     camera_utils.Altura App    ${fonte}
+    ${altura}=     Altura do app
     ${x}=    Evaluate    int(int($largura) * 0.5)
-    ${y}=    Evaluate    int(int($altura) * 0.90)
-    &{args}=    Create Dictionary    x=${x}    y=${y}
-    AppiumLibrary.Execute Script    mobile: clickGesture    &{args}
+    ${y}=    Evaluate    int(int($altura) * 0.96)
+    Tocar em coordenada    ${x}    ${y}
 
 Adicionar foto
     [Documentation]    Abre o modal "Adicionar mídia" pelo botão da categoria, escolhe
@@ -549,9 +547,9 @@ Iniciar gravação do vídeo
     EXCEPT
         Log    Obturador não encontrado pelo XML; usando coordenada aproximada.    WARN
         ${largura}=    AppiumLibrary.Get Window Width
-        ${altura}=     AppiumLibrary.Get Window Height
+        ${altura}=     Altura do app
         ${x}=    Evaluate    int(int($largura) * 0.5)
-        ${y}=    Evaluate    int(int($altura) * 0.90)
+        ${y}=    Evaluate    int(int($altura) * 0.96)
     END
     Set Test Variable    ${OBTURADOR_X}    ${x}
     Set Test Variable    ${OBTURADOR_Y}    ${y}
@@ -599,3 +597,9 @@ Parar gravação do vídeo
         Registrar estado da tela
     END
     Should Be True    ${confirmar}    msg=Não consegui parar a gravação: o botão de confirmar não apareceu.
+
+Altura do app
+    [Documentation]    Altura do app lida do XML (sem barras do sistema).
+    ${fonte}=    AppiumLibrary.Get Source
+    ${altura}=    Evaluate    int(__import__('re').search(r'<hierarchy[^>]*height="(\d+)"', $fonte).group(1))
+    RETURN    ${altura}
