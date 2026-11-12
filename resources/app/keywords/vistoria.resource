@@ -185,8 +185,8 @@ Enviar fotos
 
 Completar mídias e concluir
     [Documentation]    Captura em sequência nos slots de referência, aproximada,
-    ...    centralizada e aberta, depois adiciona o vídeo.
-    Injetar vídeo na câmera
+    ...    centralizada e aberta (com injeção de imagem), depois adiciona o vídeo
+    ...    (com injeção de vídeo). Cada mídia é injetada logo antes de abrir a câmera.
     Adicionar foto    ${VISTORIA_ADD_REFERENCIA}      ${VISTORIA_FOTO_REFERENCIA}
     Adicionar foto    ${VISTORIA_ADD_APROXIMADA}      ${VISTORIA_FOTO_APROXIMADA}
     Adicionar foto    ${VISTORIA_ADD_CENTRALIZADA}    ${VISTORIA_FOTO_CENTRALIZADA}
@@ -296,10 +296,11 @@ Tocar obturador por coordenada
     Tocar em coordenada    ${x}    ${y}
 
 Adicionar foto
-    [Documentation]    Abre o modal "Adicionar mídia" pelo botão da categoria, escolhe
-    ...    a Câmera, tira e confirma a foto.
+    [Documentation]    Abre o modal "Adicionar mídia" pelo botão da categoria, injeta a
+    ...    foto na câmera, escolhe a Câmera, tira e confirma a foto.
     [Arguments]    ${botao_adicionar}    ${foto}
     Rolar até slot    ${botao_adicionar}
+    Injetar foto na câmera
     Clicar quando visível    ${botao_adicionar}
     Abrir câmera pelo modal
     Confirmar foto           ${foto}
@@ -327,23 +328,37 @@ Abrir câmera pelo modal
     Aguardar elemento visível    ${VISTORIA_TEXTO_ZOOM_CAMERA}
 
 Injetar vídeo na câmera
-    [Documentation]    Injeta o vídeo enviado pelo CI (BS_VIDEO_URL) como feed da câmera.
-    ...    Só atua no BrowserStack (EXECUCAO=browserstack); no local, não faz nada.
-    ...    Precisa rodar ANTES de acionar a câmera, que captura o último vídeo injetado.
+    [Documentation]    Injeta o vídeo (BS_VIDEO_URL) como feed da câmera.
+    Injetar mídia na câmera    cameraVideoInjection    videoUrl    BS_VIDEO_URL
+
+Injetar mídia na câmera
+    [Documentation]    Injeta uma mídia enviada pelo CI como feed da câmera do
+    ...    BrowserStack. Só atua com EXECUCAO=browserstack; no local, não faz nada.
+    ...    A câmera captura a última mídia injetada, então a injeção precisa rodar
+    ...    ANTES de abrir a câmera.
+    [Arguments]    ${acao}    ${argumento}    ${variavel_url}
     IF    '%{EXECUCAO=local}' != 'browserstack'
         RETURN
     END
-    ${url}=    Get Environment Variable    BS_VIDEO_URL    default=${EMPTY}
+    ${url}=    Get Environment Variable    ${variavel_url}    default=${EMPTY}
     Should Not Be Empty    ${url}
-    ...    msg=BS_VIDEO_URL não definida: o upload do vídeo não rodou.
+    ...    msg=${variavel_url} não definida: o upload da mídia não rodou.
     ${script}=    Set Variable
-    ...    browserstack_executor: {"action": "cameraVideoInjection", "arguments": {"videoUrl": "${url}"}}
+    ...    browserstack_executor: {"action": "${acao}", "arguments": {"${argumento}": "${url}"}}
     AppiumLibrary.Execute Script    ${script}
+
+Injetar foto na câmera
+    [Documentation]    Injeta a foto (BS_PHOTO_URL) como feed da câmera, via injeção de
+    ...    imagem (não usa a injeção de vídeo).
+    Injetar mídia na câmera    cameraImageInjection    imageUrl    BS_PHOTO_URL
+
+
 
 Adicionar vídeo
     [Documentation]    Abre o modal "Adicionar mídia" da seção Vídeos, injeta o vídeo no
     ...    feed da câmera (BrowserStack), abre a Câmera, grava ao menos 16s (o app
     ...    exige no mínimo 15s) com 2s de folga e confirma o vídeo.
+    Injetar vídeo na câmera
     Clicar no campo de vídeo
     Abrir câmera pelo modal
     BuiltIn.Sleep    3s

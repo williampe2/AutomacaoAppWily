@@ -166,42 +166,54 @@ jobs:
           BR_PROXY_USER: ${{ secrets.BR_PROXY_USER }}
           BR_PROXY_PASS: ${{ secrets.BR_PROXY_PASS }}
 
-      - name: Upload do vídeo de injeção para o BrowserStack
+      - name: Upload das mídias de injeção para o BrowserStack
         env:
           BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
           BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
           VIDEO_PATH: media/video_injection_bs1.mp4
+          PHOTO_PATH: media/foto_injection.jpg
         run: |
           set -euo pipefail
           : "${BROWSERSTACK_USERNAME:?Configure o secret BROWSERSTACK_USERNAME}"
           : "${BROWSERSTACK_ACCESS_KEY:?Configure o secret BROWSERSTACK_ACCESS_KEY}"
 
-          if [[ ! -f "$VIDEO_PATH" ]]; then
-            echo "::error::Vídeo não encontrado: $VIDEO_PATH (ele está commitado?)"
-            exit 1
-          fi
+          # upload_media <arquivo> <custom_id> <limite_em_MB> <variavel_de_saida>
+          upload_media() {
+            local arquivo="$1" custom_id="$2" limite_mb="$3" saida="$4"
 
-          # O BrowserStack só aceita .mp4 com menos de 15 MB
-          tamanho=$(stat -f%z "$VIDEO_PATH")
-          if (( tamanho >= 15 * 1024 * 1024 )); then
-            echo "::error::Vídeo com $tamanho bytes; o limite é 15 MB."
-            exit 1
-          fi
+            if [[ ! -f "$arquivo" ]]; then
+              echo "::error::Arquivo não encontrado: $arquivo (ele está commitado?)"
+              exit 1
+            fi
 
-          resposta=$(curl --fail --silent --show-error \
-            --user "$BROWSERSTACK_USERNAME:$BROWSERSTACK_ACCESS_KEY" \
-            -X POST "https://api-cloud.browserstack.com/app-automate/upload-media" \
-            -F "file=@$VIDEO_PATH" \
-            -F "custom_id=VideoVistoria")
+            local tamanho
+            tamanho=$(stat -f%z "$arquivo")
+            if (( tamanho >= limite_mb * 1024 * 1024 )); then
+              echo "::error::$arquivo com $tamanho bytes; o limite é ${limite_mb} MB."
+              exit 1
+            fi
 
-          media_url=$(jq -r '.media_url // empty' <<< "$resposta")
-          if [[ -z "$media_url" ]]; then
-            echo "::error::Upload falhou: $resposta"
-            exit 1
-          fi
+            local resposta media_url
+            resposta=$(curl --fail --silent --show-error \
+              --user "$BROWSERSTACK_USERNAME:$BROWSERSTACK_ACCESS_KEY" \
+              -X POST "https://api-cloud.browserstack.com/app-automate/upload-media" \
+              -F "file=@$arquivo" \
+              -F "custom_id=$custom_id")
 
-          echo "Vídeo enviado: $media_url"
-          echo "BS_VIDEO_URL=$media_url" >> "$GITHUB_ENV"
+            media_url=$(jq -r '.media_url // empty' <<< "$resposta")
+            if [[ -z "$media_url" ]]; then
+              echo "::error::Upload de $arquivo falhou: $resposta"
+              exit 1
+            fi
+
+            echo "$arquivo enviado: $media_url"
+            echo "$saida=$media_url" >> "$GITHUB_ENV"
+          }
+
+          # Vídeo: .mp4 com menos de 15 MB
+          upload_media "$VIDEO_PATH" "VideoVistoria" 15 BS_VIDEO_URL
+          # Foto: .jpg/.png com menos de 5 MB (injeção de imagem)
+          upload_media "$PHOTO_PATH" "FotoVistoria" 5 BS_PHOTO_URL
 
       - name: Executar vistoria no BrowserStack
         env:
@@ -218,9 +230,11 @@ jobs:
           : "${BROWSERSTACK_USERNAME:?Configure o secret BROWSERSTACK_USERNAME}"
           : "${BROWSERSTACK_ACCESS_KEY:?Configure o secret BROWSERSTACK_ACCESS_KEY}"
           : "${BS_APP_URL:?Configure o secret BS_APP_URL}"
+          : "${BS_VIDEO_URL:?BS_VIDEO_URL não definida: o upload do vídeo não rodou}"
+          : "${BS_PHOTO_URL:?BS_PHOTO_URL não definida: o upload da foto não rodou}"
           : "${ROBOT_SUITE:?Caminho dos testes vazio}"
           export BROWSERSTACK_USERNAME BROWSERSTACK_ACCESS_KEY BS_APP_URL
-          export BS_DEVICE BS_OS_VERSION
+          export BS_DEVICE BS_OS_VERSION BS_VIDEO_URL BS_PHOTO_URL
           export EXECUCAO=browserstack
           export BS_LOCAL=true
           export BROWSERSTACK_LOCAL_IDENTIFIER="$BS_LOCAL_IDENTIFIER"
