@@ -337,10 +337,11 @@ Adicionar vídeo
     Clicar no campo de vídeo
     Abrir câmera pelo modal
     BuiltIn.Sleep    3s
-    Tocar botão de gravação
+    Iniciar gravação do vídeo
     ${duracao}=    Evaluate    int(${VISTORIA_VIDEO_MINIMO_SEGUNDOS}) + 2
     BuiltIn.Sleep    ${duracao}s
-    Parar gravação com toque firme
+    Parar gravação do vídeo
+    BuiltIn.Sleep    3s
     Clicar quando visível        ${VISTORIA_BTN_CONFIRMAR_FOTO}    20s
     Aguardar elemento visível    ${VISTORIA_VIDEO_TILE}
 
@@ -488,4 +489,113 @@ Parar gravação com toque firme
         ${gravando}=    Aparece na tela    xpath=//android.widget.TextView[contains(@text,"00:00:")]    1s
         Exit For Loop If    not ${gravando}
     END
-    
+
+# ---------- Gravação de vídeo ----------
+Localizar obturador
+    [Documentation]    Retorna as coordenadas (x, y) do centro do obturador, achado pela
+    ...    geometria (ViewGroup clicável centralizado e abaixo de 80% da altura).
+    ${largura}=    AppiumLibrary.Get Window Width
+    ${altura}=     AppiumLibrary.Get Window Height
+    @{candidatos}=    AppiumLibrary.Get Webelements    xpath=//android.view.ViewGroup[@clickable="true"]
+    FOR    ${el}    IN    @{candidatos}
+        ${loc}=    AppiumLibrary.Get Element Location    ${el}
+        ${tam}=    AppiumLibrary.Get Element Size        ${el}
+        ${cx}=    Evaluate    int($loc['x'] + $tam['width'] / 2)
+        ${cy}=    Evaluate    int($loc['y'] + $tam['height'] / 2)
+        ${centrado}=    Evaluate    abs($cx - int($largura) / 2) < int($largura) * 0.1
+        ${embaixo}=     Evaluate    $cy > int($altura) * 0.8
+        IF    ${centrado} and ${embaixo}
+            RETURN    ${cx}    ${cy}
+        END
+    END
+    Fail    Obturador não encontrado entre os elementos clicáveis.
+
+Localizar elemento do obturador
+    [Documentation]    Retorna o WebElement do obturador (ViewGroup clicável centralizado
+    ...    e abaixo de 80% da altura).
+    ${largura}=    AppiumLibrary.Get Window Width
+    ${altura}=     AppiumLibrary.Get Window Height
+    @{candidatos}=    AppiumLibrary.Get Webelements    xpath=//android.view.ViewGroup[@clickable="true"]
+    FOR    ${el}    IN    @{candidatos}
+        ${loc}=    AppiumLibrary.Get Element Location    ${el}
+        ${tam}=    AppiumLibrary.Get Element Size        ${el}
+        ${cx}=    Evaluate    int($loc['x'] + $tam['width'] / 2)
+        ${cy}=    Evaluate    int($loc['y'] + $tam['height'] / 2)
+        ${centrado}=    Evaluate    abs($cx - int($largura) / 2) < int($largura) * 0.1
+        ${embaixo}=     Evaluate    $cy > int($altura) * 0.8
+        IF    ${centrado} and ${embaixo}
+            RETURN    ${el}
+        END
+    END
+    Fail    Obturador não encontrado entre os elementos clicáveis.
+
+Tocar em coordenada
+    [Documentation]    Toque na coordenada. Sem duration usa Click A Point (o Appium 1.22
+    ...    não tem mobile: clickGesture). Com duration > 0 faz toque longo.
+    [Arguments]    ${x}    ${y}    ${duration}=0
+    IF    ${duration} > 0
+        &{args}=    Create Dictionary    x=${x}    y=${y}    duration=${duration}
+        AppiumLibrary.Execute Script    mobile: longClickGesture    &{args}
+    ELSE
+        AppiumLibrary.Click A Point    ${x}    ${y}    duration=100
+    END
+
+Iniciar gravação do vídeo
+    [Documentation]    Localiza o obturador, guarda suas coordenadas (para parar depois)
+    ...    e inicia a gravação clicando no elemento (igual à foto). Se falhar, toca na
+    ...    coordenada.
+    TRY
+        ${x}    ${y}=    Localizar obturador
+    EXCEPT
+        Log    Obturador não encontrado pelo XML; usando coordenada aproximada.    WARN
+        ${largura}=    AppiumLibrary.Get Window Width
+        ${altura}=     AppiumLibrary.Get Window Height
+        ${x}=    Evaluate    int(int($largura) * 0.5)
+        ${y}=    Evaluate    int(int($altura) * 0.90)
+    END
+    Set Test Variable    ${OBTURADOR_X}    ${x}
+    Set Test Variable    ${OBTURADOR_Y}    ${y}
+    ${ok}=    Run Keyword And Return Status    Tocar obturador pelo elemento
+    IF    not ${ok}
+        Tocar em coordenada    ${x}    ${y}
+    END
+
+Tentar parar gravação
+    [Documentation]    Uma tentativa de parar a gravação, usando uma estratégia diferente
+    ...    conforme o número da tentativa.
+    [Arguments]    ${tentativa}
+    ${estrategia}=    Evaluate    ${tentativa} % 5
+    Log    Parando gravação: tentativa ${tentativa + 1}, estratégia ${estrategia}.    WARN
+    IF    ${estrategia} == 0
+        ${el}=    Localizar elemento do obturador
+        AppiumLibrary.Click Element    ${el}
+    ELSE IF    ${estrategia} == 1
+        ${el}=    Localizar elemento do obturador
+        ${id}=    Evaluate    $el.id
+        &{args}=    Create Dictionary    elementId=${id}    duration=100
+        AppiumLibrary.Execute Script    mobile: longClickGesture    &{args}
+    ELSE IF    ${estrategia} == 2
+        Tocar em coordenada    ${OBTURADOR_X}    ${OBTURADOR_Y}    300
+    ELSE IF    ${estrategia} == 3
+        AppiumLibrary.Click A Point    ${OBTURADOR_X}    ${OBTURADOR_Y}    duration=150
+    ELSE
+        ${y_alto}=    Evaluate    int(${OBTURADOR_Y}) - 40
+        Tocar em coordenada    ${OBTURADOR_X}    ${y_alto}    800
+    END
+
+Parar gravação do vídeo
+    [Documentation]    Tenta parar a gravação com estratégias diferentes (elemento,
+    ...    elementId, toque longo, ponto, toque longo mais alto) até o botão de confirmar
+    ...    aparecer. Até 8 tentativas.
+    FOR    ${tentativa}    IN RANGE    8
+        ${confirmar}=    Aparece na tela    ${VISTORIA_BTN_CONFIRMAR_FOTO}    1s
+        Exit For Loop If    ${confirmar}
+        Run Keyword And Ignore Error    Tentar parar gravação    ${tentativa}
+        ${confirmar}=    Aparece na tela    ${VISTORIA_BTN_CONFIRMAR_FOTO}    4s
+        Exit For Loop If    ${confirmar}
+    END
+    ${confirmar}=    Aparece na tela    ${VISTORIA_BTN_CONFIRMAR_FOTO}    3s
+    IF    not ${confirmar}
+        Registrar estado da tela
+    END
+    Should Be True    ${confirmar}    msg=Não consegui parar a gravação: o botão de confirmar não apareceu.
