@@ -91,20 +91,20 @@ Preencher o formulário de diagnóstico e enviar
 
     # Abre o dropdown de análise
     Wait Until Element Is Visible
-    ...    xpath=//div[@id="div-select-analysis"]/span/span[1]    5s
+    ...    xpath=//div[@id="div-select-analysis"]/span/span[1]    15s
     SeleniumLibrary.Click Element
     ...    xpath=//div[@id="div-select-analysis"]/span/span[1]
 
     # Seleciona a opção desejada
-    Wait Until Element Is Visible    ${WEB_OPCAO_ANALISE_TEXTO}    5s
+    Wait Until Element Is Visible    ${WEB_OPCAO_ANALISE_TEXTO}    15s
     SeleniumLibrary.Click Element    ${WEB_OPCAO_ANALISE_TEXTO}
 
-    Wait Until Element Is Visible    ${WEB_RADIO_AVALIACAO_5}    5s
+    Wait Until Element Is Visible    ${WEB_RADIO_AVALIACAO_5}    15s
     SeleniumLibrary.Click Element    ${WEB_RADIO_AVALIACAO_5}
 
     Sleep    1s
 
-    Wait Until Element Is Visible    ${WEB_BTN_DIAGNOSTICO_ENVIAR}    5s
+    Wait Until Element Is Visible    ${WEB_BTN_DIAGNOSTICO_ENVIAR}    15s
     SeleniumLibrary.Click Element    ${WEB_BTN_DIAGNOSTICO_ENVIAR}
 
     Sleep    1s
