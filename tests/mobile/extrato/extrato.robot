@@ -14,7 +14,7 @@ Saldo Disponível Deve Ser Exibido
     [Tags]    mobile    extrato    fluxo_principal    smoke
     [Teardown]    Voltar para a home
     Given Abrir extrato
-    Then Wait Until Element Is Visible    ${EXTRATO_SALDO_DISPONIVEL}    ${DEFAULT_TIMEOUT}s
+    Then AppiumLibrary.Wait Until Element Is Visible    ${EXTRATO_SALDO_DISPONIVEL}    ${DEFAULT_TIMEOUT}s
 
 Saldo Disponível Deve Ter Valor Preenchido
     [Documentation]    Confirma que o saldo exibe um valor não vazio.
