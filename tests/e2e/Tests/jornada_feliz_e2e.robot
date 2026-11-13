@@ -155,3 +155,4 @@ Preparar e garantir dados pessoais
     [Documentation]    Roda o preparo dos dados pessoais uma vez (salva o nome do perfil) e garante a lista aberta.
     Preparar dados pessoais
     Garantir lista de dados pessoais
+    
