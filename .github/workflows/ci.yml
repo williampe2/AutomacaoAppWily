@@ -30,7 +30,7 @@ jobs:
       BS_BUILD_NAME: ${{ github.workflow }}-${{ github.run_id }}-${{ github.run_attempt }}
       BS_SESSION_NAME: login-${{ github.run_id }}-${{ github.run_attempt }}
       # Pasta/arquivo de testes passado ao Robot (ajuste se quiser rodar só uma suíte)
-      ROBOT_SUITE: tests/mobile/extrato/extrato.robot
+      ROBOT_SUITE: tests/e2e/Tests/jornada_feliz_e2e.robot
 
     steps:
       - name: Checkout do código
@@ -215,7 +215,7 @@ jobs:
           # Foto: .jpg/.png com menos de 5 MB (injeção de imagem)
           upload_media "$PHOTO_PATH" "FotoVistoria" 5 BS_PHOTO_URL
 
-      - name: Executar vistoria no BrowserStack
+      - name: Executar caminho feliz do app no BrowserStack
         env:
           BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
           BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
