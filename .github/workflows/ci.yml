@@ -2,9 +2,9 @@ name: CI Automacao
 
 on:
   push:
-    branches: [ main, master, integration, testeVersaoAntiga ]
+    branches: [integration ]
   pull_request:
-    branches: [ main, master, integration, testeVersaoAntiga ]
+    branches: [integration ]
   workflow_dispatch:
     inputs:
       bs_device:
