@@ -30,6 +30,8 @@ log.html
 output.html
 report.html 
 *.xml
+ui.xml
+camera.xml
 
 #allure report
 *.sh
