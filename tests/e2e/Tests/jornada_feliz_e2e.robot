@@ -112,7 +112,7 @@ Lista De Dados Pessoais Deve Retornar Para A Home
     [Tags]    mobile    dados_pessoais    jornada_feliz
     [Setup]    Garantir lista de dados pessoais
     [Teardown]    No Operation
-    When Voltar para a home
+    When dados_pessoais.Voltar para a home
     Then AppiumLibrary.Wait Until Element Is Visible    ${MENU_BTN_ABRIR}    ${DEFAULT_TIMEOUT}s
 
 # ===================== EXTRATO =====================
@@ -120,14 +120,14 @@ Saldo Disponível Deve Ser Exibido
     [Documentation]    Confirma que o saldo é exibido no extrato.
     [Tags]    mobile    extrato    fluxo_principal    smoke    jornada_feliz
     [Setup]    Preparar extrato
-    [Teardown]    Voltar para a home
+    [Teardown]    extrato.Voltar para a home
     Given Abrir extrato
     Then AppiumLibrary.Wait Until Element Is Visible    ${EXTRATO_SALDO_DISPONIVEL}    ${DEFAULT_TIMEOUT}s
 
 Saldo Disponível Deve Ter Valor Preenchido
     [Documentation]    Confirma que o saldo exibe um valor não vazio.
     [Tags]    mobile    extrato    fluxo_principal    jornada_feliz
-    [Teardown]    Voltar para a home
+    [Teardown]    extrato.Voltar para a home
     Given Abrir extrato
     Then Validar texto preenchido    ${EXTRATO_VALOR_SALDO}
 
